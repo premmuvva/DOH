@@ -1,24 +1,26 @@
-from get_csv_from_pcap import extract_network_features
-
-# print(extract_network_features("/Users/reddy/Documents/classes/thesis/MaliciousDoH-dns2tcp-Pcap-001_600/dns2tcp_tunnel_1111_doh8_2020-04-01T23:05:38.598516.pcap"))
-
 import pandas as pd
 from scapy.all import *
 
 import os
+import concurrent.futures
+import traceback
+import os
+import numpy as np
 
 def process_pcap(pcap_file, df):
     
     print("Processing pcap:", pcap_file)
     
     packets = rdpcap(pcap_file)
+    if(len(packets) == 0):
+        return df
     first_packet = packets[0]
     
-    timestamp = datetime.fromtimestamp(int(first_packet.time))
+    # timestamp = datetime.fromtimestamp(int(first_packet.time))
     df.loc[len(df)] = {
                 'src': first_packet[IP].src,
                 'dst': first_packet[IP].dst,
-                'Timestamp': timestamp,
+                # 'Timestamp': timestamp,
                 'RawTimestamp': first_packet.time,
                 'Direction': 1,
                 'Number of Packets': 0,
@@ -30,7 +32,7 @@ def process_pcap(pcap_file, df):
 
     for packet in packets:
             
-        timestamp = datetime.fromtimestamp(int(packet.time))
+        # timestamp = datetime.fromtimestamp(int(packet.time))
         packet_size = len(packet)
         
         
@@ -41,7 +43,7 @@ def process_pcap(pcap_file, df):
             df.loc[len(df)] = {
                 'src': packet[IP].src,
                 'dst': packet[IP].dst,
-                'Timestamp': timestamp,
+                # 'Timestamp': timestamp,
                 'RawTimestamp': packet.time,
                 'Direction': current_dir,
                 'Number of Packets': 1,
@@ -53,7 +55,7 @@ def process_pcap(pcap_file, df):
             df.loc[len(df) - 1] = {
                 'src': packet[IP].src,
                 'dst': packet[IP].dst,
-                'Timestamp': timestamp,
+                # 'Timestamp': timestamp,
                 'RawTimestamp': packet.time,
                 'Direction': current_dir,
                 'Number of Packets': temp['Number of Packets'] + 1,
@@ -63,34 +65,58 @@ def process_pcap(pcap_file, df):
     return df
 
 
-columns = ['src', 'dst', 'Number of Packets', 'Timestamp', 'Direction', 'Size', 'Duration', 'RawTimestamp']
-df = pd.DataFrame(columns=columns)
+columns = ['src', 'dst', 'Number of Packets', 'Direction', 'Size', 'Duration', 'RawTimestamp']
 
-
-print(df)
-
-
-import os
-import concurrent.futures
+df_ar = []
 
 def process_pcap_wrapper(args):
-    file_path, df = args
-    process_pcap(file_path, df)
-    return df
+    try: 
+        file_path, i = args
+        df = pd.DataFrame(columns=columns)
+        process_pcap(file_path, df)
+        df_ar.append(i)
+        np.save('output/2/df'+str(i)+'.npy', df)
+    except Exception as e:
+        print("An error", file_path)
+        print(traceback.format_exc())
 
-directory_path = "/Users/reddy/Documents/classes/thesis/MaliciousDoH-dns2tcp-Pcap-001_600/"
+def get_process_params(dir_path):
+    i = 0
+    file_list = []
+    for root, dirs, files in os.walk(dir_path):
+        for filename in files:
+            if filename.endswith(".pcap"):
+        # if os.path.isfile(os.path.join(dir_path, filename)): 
+                file_list.append((os.path.join(root, filename), i))
+                i+=1
+    return file_list
+
+def run_executor(dir_path):
+    file_list = get_process_params(dir_path)
+    df_ar = [i for i in range(len(file_list))]
+    print("Total number of file to process:", len(file_list))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:    
+        executor.map(process_pcap_wrapper, file_list)
+
+def process(input_dir, output_csv):
+    globals()['df_ar'] = []
+    run_executor(input_dir)
+    print("final list of output dfs", len(df_ar))
+    # final_df = pd.DataFrame(columns=columns)
+    # for ddf in df_ar:
+    #     final_df = pd.concat(df_ar, ignore_index=True)
+    # final_df.to_csv(output_csv, index=False)
 
 
 
-for filename in os.listdir(directory_path):
-    if os.path.isfile(os.path.join(directory_path, filename)): 
-        file_list.append(os.path.join(directory_path, filename), pd.DataFrame(columns=columns))
+# process("/home/x286t435/thesis/time-series/dataset/Malicious", 'output/Malicious.csv')
+process("/home/x286t435/thesis/time-series/dataset/Benign", 'output/Benign.csv')
 
-with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-    executor.map(process_pcap_wrapper, file_list[:4])
-
-df.to_csv('malicious.csv', index=False)
-
+# for root, dirs, files in os.walk("/Users/reddy/Documents/classes/thesis/"):
+#     print("root", root)
+#     print("dirs", dirs)
+#     print("files", files)
+    
 
 # directory_path = "/Users/reddy/Documents/classes/thesis/MaliciousDoH-dns2tcp-Pcap-001_600/"
 
