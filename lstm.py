@@ -9,6 +9,9 @@ import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+import string
+from loadnpyfiles import load_npy
 
 import random
 print("test run count")
@@ -40,27 +43,42 @@ def Sequential_Input_LSTM(df, input_sequence):
 
 data_folder = '/Users/reddy/Documents/classes/thesis/dga-detection/data-processing/'
 
-benign_df = pd.read_csv(data_folder + "beign.csv")
-benign_df['Label'] = 0
-malicious_df = pd.read_csv(data_folder + "malicious.csv")
-malicious_df['Label'] = 1
+# # benign_df = pd.read_csv(data_folder + "beign.csv")
+# benign_df = load_npy('output/11/begign.npy')
+# benign_df['Label'] = 0
+# # malicious_df = pd.read_csv(data_folder + "malicious.npy")
+# malicious_df = load_npy('output/11/malicious.npy')
+# malicious_df['Label'] = 1
 
-# data_df = malicious_df
-data_df = pd.concat([malicious_df, benign_df], ignore_index=True)
+# # data_df = malicious_df
+# data_df = pd.concat([malicious_df, benign_df], ignore_index=True)
+loaded_data = np.load('output/11/totaldata.npy', allow_pickle=True)  # Set allow_pickle=True if the data contains objects
+
+columns = ['Number of Packets', 'Direction', 'Size', 'Duration', 'Label']
+
+# Create a DataFrame from the loaded data
+data_df = pd.DataFrame(loaded_data, columns=columns)
 
 # duplicate = int(len(malicious_df)/len(data_df))
 # print(duplicate)
 # for i in range(duplicate):
     # data_df = data_df.append(benign_df)
-data_df = data_df.drop(['Timestamp', 'src', 'dst'], axis=1)
+# data_df = data_df.drop(['RawTimestamp', 'src', 'dst'], axis=1)
 data_df['Label']= data_df['Label'].astype('int64')
+data_df['Number of Packets']= data_df['Number of Packets'].astype('int64')
+data_df['Direction']= data_df['Direction'].astype('int64')
+data_df['Size']= data_df['Size'].astype('int64')
+data_df['Duration']= data_df['Duration'].astype('float')
 
 print(data_df.dtypes)
 print(data_df.head)
 print(data_df.shape)
 
-np.save('data.npy', data_df)
+np.save('output/11/totaldata.npy', data_df)
 
+def generate_random_string(length):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for _ in range(length))
 
 def model(timestep, number_of_lstm_nodes):
     X, y = Sequential_Input_LSTM(data_df, timestep)
@@ -74,27 +92,37 @@ def model(timestep, number_of_lstm_nodes):
     print(len(X_train))
 
     model = Sequential()
-    model.add(LSTM(units=number_of_lstm_nodes, input_shape=(50, 6)))
-    model.add(Dense(units=1))
+    model.add(Dense(units=512, activation='relu', input_shape=(50, 4)))
+    # add batch layer
+    model.add(LSTM(units=number_of_lstm_nodes))
+    model.add(Dense(units=512, activation='relu'))
+    # Add the third hidden layer
+    model.add(Dense(units=512, activation='relu'))
 
     # binary_crossentropy
     model.compile(optimizer='adam', loss='mse')
 
     print("training")
-    model.fit(X_train, y_train, epochs=10, batch_size=32)
+    model.fit(X_train, y_train, epochs=5, batch_size=32)
+    
+    random_string = generate_random_string(6)
+    model_name = f"model_{random_string}.h5"
+    model.save(f'output/model/{model_name}')
+    
 
     y_pred = model.predict(X_test, batch_size=32, verbose=1)
 
-    # print(y_pred)
+    print("y_pred", y_pred)
 
     y_pred_bool = np.argmax(y_pred, axis=1)
 
-    # print(y_pred_bool)
+    print("y_pred_bool", y_pred_bool)
 
     print(classification_report(y_test, y_pred_bool))
+    print(confusion_matrix(y_test, y_pred_bool))
     
 timestep = 50
-model(timestep=timestep, number_of_lstm_nodes=216)
+model(timestep=timestep, number_of_lstm_nodes=512)
 
 
 
