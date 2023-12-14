@@ -1,6 +1,10 @@
 import os
 import numpy as np
 
+import pandas as pd
+
+
+
 def merge_npy_files_in_directory(directory_path, output_path):
     # Get a list of all .npy files in the specified directory
     npy_files = [f for f in os.listdir(directory_path) if f.endswith('.npy')]
@@ -9,19 +13,32 @@ def merge_npy_files_in_directory(directory_path, output_path):
         print("No .npy files found in the specified directory.")
         return
     merged_data = np.load(os.path.join(directory_path, npy_files[0]), allow_pickle=True)
-    print(merged_data)
+    # print(merged_data.T[0])
     
-
+    index = pd.MultiIndex.from_product([npy_files[:1],['src', 'dst', 'Number of Packets', 'Direction', 'Size', 'Duration', 'RawTimestamp']])
+    
+    df = pd.DataFrame(merged_data, index=index)
+    print("prem", df)
     # Iterate over the remaining .npy files and concatenate their data
-    for npy_file in npy_files[1:2]:
+    for npy_file in npy_files[:]:
         data = np.load(os.path.join(directory_path, npy_file), allow_pickle=True)
-        print(f"merging file : {npy_file} of length {len(data)}")
-        merged_data = np.concatenate((merged_data, data), axis=1)
-        print(merged_data)
-
-    print("final merge size", len(merged_data))
+        print(f"merging file : {npy_file} of length {len(data.T)}")
+        index = pd.MultiIndex.from_product([[npy_file],['src', 'dst', 'Number of Packets', 'Direction', 'Size', 'Duration', 'RawTimestamp']])
+        df2 = pd.DataFrame(data, index=index)
+        df = pd.concat([df, df2], axis=0)
+        # print(df)
+        
+        
+        # df2 = pd.read_csv('output/begging.csv')
+        # print(df2)
+        
+        # merged_data = np.concatenate((merged_data, data), axis=1)
+        # print(merged_data)
+        
+    df.to_csv('output/begging.csv', index=True)
+    # print("final merge size", len(merged_data))
     # Save the merged data to a new .npy file
-    np.save(output_path, merged_data)
+    # np.save(output_path, merged_data)
     print(f"Merged data saved to {output_path}.")
 
 # Example usage:
