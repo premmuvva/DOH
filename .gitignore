@@ -1,3 +1,4 @@
-output/
+output/**
 venv/
 *.log
+pcap_split/
