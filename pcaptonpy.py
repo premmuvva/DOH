@@ -17,7 +17,6 @@ def process_pcap(pcap_file, df):
         return df
     first_packet = packets[0]
     
-    # timestamp = datetime.fromtimestamp(int(first_packet.time))
     df.loc[len(df)] = {
                 'src': first_packet[IP].src,
                 'dst': first_packet[IP].dst,
@@ -32,11 +31,7 @@ def process_pcap(pcap_file, df):
     current_dir = 1
 
     for packet in packets:
-            
-        # timestamp = datetime.fromtimestamp(int(packet.time))
         packet_size = len(packet)
-        
-        
         temp = df.loc[len(df) - 1]
         
         if((temp['src'] != packet[IP].src) or (temp['dst'] != packet[IP].dst)): 
@@ -44,7 +39,6 @@ def process_pcap(pcap_file, df):
             df.loc[len(df)] = {
                 'src': packet[IP].src,
                 'dst': packet[IP].dst,
-                # 'Timestamp': timestamp,
                 'RawTimestamp': packet.time,
                 'Direction': current_dir,
                 'Number of Packets': 1,
@@ -56,13 +50,13 @@ def process_pcap(pcap_file, df):
             df.loc[len(df) - 1] = {
                 'src': packet[IP].src,
                 'dst': packet[IP].dst,
-                # 'Timestamp': timestamp,
                 'RawTimestamp': packet.time,
                 'Direction': current_dir,
                 'Number of Packets': temp['Number of Packets'] + 1,
                 'Size': temp['Size'] + packet_size,
                 'Duration': temp['Duration'] + (packet.time - temp['RawTimestamp']) * 1000
             }
+            
     return df
 
 
@@ -73,7 +67,7 @@ df_ar = []
 def process_pcap_wrapper(args):
     try: 
         file_path, i = args
-        output_file_name = 'output/npy/benign/'+str(i)+'.npy'
+        output_file_name = 'output/npy/malicious/'+str(i)+'.npy'
         if os.path.exists(output_file_name):
             print("File exists skipping")
         df = pd.DataFrame(columns=columns)
@@ -125,5 +119,6 @@ def process(input_dir, output_csv):
 
 
 # process("/home/x286t435/thesis/time-series/dataset/Malicious", 'output/Malicious.csv')
-process("/home/x286t435/thesis/time-series/dohv2/output/pcap_split/benign/", 'output/npy/Benign.npy')
+# process("/home/x286t435/thesis/time-series/dohv2/output/pcap_split/benign/", 'output/npy/Benign.npy')
+process("/home/x286t435/thesis/time-series/dohv2/output/pcap_split/malicious/", 'output/npy/Malicious.npy')
 

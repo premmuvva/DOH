@@ -13,68 +13,34 @@ def merge_npy_files_in_directory(directory_path, output_path):
         print("No .npy files found in the specified directory.")
         return
     merged_data = np.load(os.path.join(directory_path, npy_files[0]), allow_pickle=True)
-    # print(merged_data.T[0])
     
     index = pd.MultiIndex.from_product([npy_files[:1],['src', 'dst', 'Number of Packets', 'Direction', 'Size', 'Duration', 'RawTimestamp']])
     
     df = pd.DataFrame(merged_data, index=index)
-    print("prem", df)
+
+    i = 0
     # Iterate over the remaining .npy files and concatenate their data
     for npy_file in npy_files[:]:
         data = np.load(os.path.join(directory_path, npy_file), allow_pickle=True)
-        print(f"merging file : {npy_file} of length {len(data.T)}")
+        
         index = pd.MultiIndex.from_product([[npy_file],['src', 'dst', 'Number of Packets', 'Direction', 'Size', 'Duration', 'RawTimestamp']])
         df2 = pd.DataFrame(data, index=index)
         df = pd.concat([df, df2], axis=0)
-        # print(df)
+        if i%100 == 0:
+            print(f"merging file : {npy_file} of length {len(df)}")
+            df.to_csv(output_path, index=True)
+            print("saving...")
+        i+=1
         
-        
-        # df2 = pd.read_csv('output/begging.csv')
-        # print(df2)
-        
-        # merged_data = np.concatenate((merged_data, data), axis=1)
-        # print(merged_data)
-        
-    df.to_csv('output/begging.csv', index=True)
-    # print("final merge size", len(merged_data))
-    # Save the merged data to a new .npy file
-    # np.save(output_path, merged_data)
+    df.to_csv(output_path, index=True)
     print(f"Merged data saved to {output_path}.")
 
 # Example usage:
-directory_path = 'output/npy/benign/'
-output_path = 'output/begign.npy'
+# directory_path = 'output/npy/benign/'
+directory_path = 'output/npy/malicious/'
+# output_path = 'output/begign.csv'
+output_path = 'output/malicious.csv'
 
 merge_npy_files_in_directory(directory_path, output_path)
 
 
-
-
-# def find_missing_files(directory_path, base_filename, total_files):
-#     existing_files = set()
-#     missing_files = []
-
-#     # Get a list of all files in the specified directory
-#     all_files = os.listdir(directory_path)
-
-#     # Extract the numeric part of the filename and add it to the existing_files set
-#     for filename in all_files:
-#         if filename.startswith(base_filename) and filename.endswith('.npy'):
-#             try:
-#                 file_number = int(filename[len(base_filename):-len('.npy')])
-#                 existing_files.add(file_number)
-#             except ValueError:
-#                 pass  # Ignore files that do not match the expected pattern
-    
-#         # Find missing files in the range
-#     for i in range(1, total_files + 1):
-#         if i not in existing_files:
-#             missing_files.append(f"{base_filename}{i}.npy")
-
-#     # return missing_files
-#     print(missing_files)
-
-# base_filename = 'df'
-# total_files = 1046
-
-# missing_files = find_missing_files(directory_path, base_filename, total_files)
