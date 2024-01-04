@@ -45,7 +45,7 @@ df = pd.DataFrame(columns=['src', 'dst', 'Number of Packets', 'Direction', 'Size
 def generate_dataset():
     data_folder = 'output/'
     global df
-    data_df = pd.read_csv(data_folder + "begging.csv", index_col=[0,1], skipinitialspace=True)
+    data_df = pd.read_csv(data_folder + "malicious.csv", index_col=[0,1], skipinitialspace=True)
 
     i = 0
     
@@ -57,6 +57,7 @@ def generate_dataset():
         i += 1;
         new_df = data_df.loc[date].T
         df = pd.concat([df, new_df])
+        # print("done")
         # print(len(new_df))
         
     print(df)
@@ -68,7 +69,7 @@ def fetch_dataset():
     benign_df = benign_df.drop(['RawTimestamp', 'src', 'dst'], axis=1)
     benign_df.to_csv("output/final_benign_dataset.csv", index=True)
     
-    malicious_df = pd.read_csv("output/benign_dataset.csv", header=[0], index_col=0)
+    malicious_df = pd.read_csv("output/malicious_dataset.csv", header=[0], index_col=0)
     malicious_df['Label'] = 1
     malicious_df = malicious_df.drop(['RawTimestamp', 'src', 'dst'], axis=1)
     malicious_df.to_csv("output/final_malicious_dataset.csv", index=True)
@@ -134,6 +135,7 @@ def model(data_df, timestep, number_of_lstm_nodes):
     model.add(Dense(units=4056, activation='relu'))
     model.add(Dense(units=4056, activation='relu'))
     model.add(Dense(units=1, activation='linear'))
+
     model.compile(optimizer='adam', loss='mse')
 
     print("training")
