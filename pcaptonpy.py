@@ -7,12 +7,22 @@ import traceback
 import os
 import numpy as np
 
+from io import BytesIO
+
 def process_pcap(pcap_file, df):
     
-    print("Processing pcap:", pcap_file)
+    # print("Processing pcap:", pcap_file)
     
+    # pcap_file_object = BytesIO(pcap_file)
+    
+    print("processoing", os.path.isfile(pcap_file))
+    # try:
     packets = rdpcap(pcap_file)
-    print(packets)
+    # except Exception as e:
+    #     print(e)
+        
+    
+    print("packets", packets)
     if(len(packets) == 0):
         return df
     first_packet = packets[0]
@@ -56,7 +66,10 @@ def process_pcap(pcap_file, df):
                 'Size': temp['Size'] + packet_size,
                 'Duration': temp['Duration'] + (packet.time - temp['RawTimestamp']) * 1000
             }
-            
+    # print(df)
+    
+    print("after cwd", os.getcwd())
+    
     return df
 
 
@@ -120,5 +133,5 @@ def process(input_dir, output_csv):
 
 # process("/home/x286t435/thesis/time-series/dataset/Malicious", 'output/Malicious.csv')
 # process("/home/x286t435/thesis/time-series/dohv2/output/pcap_split/benign/", 'output/npy/Benign.npy')
-process("/home/x286t435/thesis/time-series/dohv2/output/pcap_split/malicious/", 'output/npy/Malicious.npy')
+# process("/home/x286t435/thesis/time-series/dohv2/output/pcap_split/malicious/", 'output/npy/Malicious.npy')
 
