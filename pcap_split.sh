@@ -12,7 +12,7 @@ do
             outputfile=$(basename "$file_path" | cut -f 1 -d '.')
             echo "$outputfile $file_path"
             {
-            ~/tshark/usr/local/bin/tshark -r $file_path -w output/pcap_split/benignV2/$outputfile-$stream.pcap -Y "tcp.stream==$stream && tls.app_data" 
+            ~/tshark/usr/local/bin/tshark -r $file_path -w $2/$outputfile-$stream.pcap -Y "tcp.stream==$stream && tls.app_data" 
             ((current_threads--))
             } &
             ((current_threads++))
