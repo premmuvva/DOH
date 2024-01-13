@@ -90,6 +90,10 @@ def generate_random_string(length):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for _ in range(length))
 
+
+output_path = f"output/lstm_{generate_random_string(4)}"
+os.makedirs(output_path)
+
 def model(data_df, timestep, number_of_lstm_nodes):
     X, y = Sequential_Input_LSTM(data_df, timestep)
     X[np.isnan(X)] = 0
@@ -102,32 +106,33 @@ def model(data_df, timestep, number_of_lstm_nodes):
     print(len(X_train))
 
     model = Sequential()
-    model.add(Dense(units=4056, activation='relu', input_shape=(timestep, 4))) 
+    model.add(Dense(units=number_of_lstm_nodes, activation='relu', input_shape=(timestep, 4))) 
     model.add(LSTM(units=number_of_lstm_nodes))
-    model.add(Dense(units=4056, activation='relu'))
-    model.add(Dense(units=4056, activation='relu'))
+    model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
+    model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
     model.add(Dense(units=1, activation='linear'))
 
     model.compile(optimizer='adam', loss='mse')
 
     print("training")
-    model.fit(X_train, y_train, epochs=10, batch_size=64)
+    model.fit(X_train, y_train, epochs=10, batch_size=64, verbose=2)
     
     random_string = generate_random_string(6)
-    model_name = f"model_time_step_{timestep}_{random_string}.h5"
+    model_name = f"model_time_step_{timestep}_nodes_{number_of_lstm_nodes}_{random_string}.h5"
     
     print("saving model as ", model_name)
     
-    model.save(f'output/model/{model_name}')
+    model.save(f'{output_path}/{model_name}')
     
-    y_pred = model.predict(X_test, batch_size=32, verbose=1)
+    y_pred = model.predict(X_test, batch_size=32, verbose=2)
     plot_x = [i for i in range(len(y_pred))]
     
     z_pred = [x for _,x in sorted(zip(y_test, y_pred))]
     plt.plot(plot_x, z_pred, color="red")
-    plt.savefig(f"output/logs/lstm/lstm_10_epoch_{timestep}.png")
+    plt.savefig(f"{output_path}/lstm_10_epoch_{timestep}_nodes_{number_of_lstm_nodes}.png")
     # plt.plot(plot_x, y_test, color="blue")
     # plt.savefig("plotFinalResults1.png")
+    plt.clf()
 
     print("y_pred", y_pred)
 
@@ -139,7 +144,20 @@ def model(data_df, timestep, number_of_lstm_nodes):
 
     print(classification_report(y_test, y_pred_bool))
     print(confusion_matrix(y_test, y_pred_bool))
+    accuracy = np.sum(y_test == y_pred_bool) / len(y_test)
+    return accuracy
     
-timestep = 2
-model(df, timestep=timestep, number_of_lstm_nodes=4056)
+all_accuracies = []
+for lstm_nodes in [1024, 2048, 4096, 8192]:
+    accuracies = []
+    for timestep in range(1,11):
+        accu = model(df, timestep=timestep, number_of_lstm_nodes=lstm_nodes)
+        accuracies.append(accu)
+    all_accuracies.append(accuracies)
+    plt.plot(range(1, 11), accuracies, marker='o')
+    plt.xlabel('Time Step')
+    plt.ylabel('Accuracy')
+    plt.savefig(f"{output_path}/lstm_accuracy_10_epoch_nodes_{lstm_nodes}.png")
+    plt.clf()
 
+print("all_accuracies", all_accuracies)

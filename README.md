@@ -17,7 +17,7 @@ sbatch runCmd.sh pcaptonpy.py
 3. Merge npy files:
 ```
 sbatch runCmd.sh mergenpy.py 
+
 ```
 
-b - 447mb
-m - 747
+4. Final preprocessing dataset

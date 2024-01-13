@@ -15,7 +15,7 @@ import string
 import matplotlib.pyplot as plt
 
 np.set_printoptions(threshold=30)
-print("test run count")
+print("test run count", flush=True)
 # print(random.randint(0,10000))
 
 def Sequential_Input_LSTM(total_data_df, time_step_size):
@@ -45,28 +45,49 @@ df = pd.DataFrame(columns=['src', 'dst', 'Number of Packets', 'Direction', 'Size
 def generate_dataset(input_file, output_file):
 
     global df
-    data_df = pd.read_csv(input_file, index_col=[0,1], skipinitialspace=True)
+    data_df = pd.read_csv(input_file, index_col=[0,1], skipinitialspace=True, low_memory=False)
 
     i = 0
     
     for date, new_df in data_df.groupby(level=0):
-        if i % 20 == 0:
-            print(len(df))
-            df.to_csv(output_file, index=True)
+        # if i == 4:
+        #     break
+        print(f"processsing file {date}", flush=True)
+        if i % 50 == 0:
+            print(f"Current saving df size: {len(df)}")
+            df.to_csv(output_file, index=False)
         #     break
         i += 1;
         new_df = data_df.loc[date].T
+        
+        step_size = 20
+
+        for ii in range(0, len(new_df), step_size):
+            chunk = new_df.iloc[ii:ii + step_size]
+
+            # Check if all rows in the chunk are NaN
+            if chunk.isna().all(axis=1).all():
+                new_df = new_df.iloc[:ii + step_size]
+                break
+            
+                
+            
+        # print(new_df)
+        # print("new_df", new_df)
+        # add logic to add rows which have no 20 consecutive all nan rows
         df = pd.concat([df, new_df])
     
-    df.to_csv(output_file, index=True)
-    print(df)
+    df.to_csv(output_file, index=False)
+    # print(df, flush=True)
 
 
-generate_dataset('output/merge_npy/benignV2.csv', "output/benign_pre_timestep_dataset.csv") 
+# generate_dataset('output/merge_npy/benignV2.csv', "output/temp/benign_pre_timestep_dataset_1.csv") 
+
+generate_dataset('output/merge_npy/maliciousv2_2_cp.csv', "output/temp/malicious_pre_timestep_dataset.csv") 
 
 
 
-print(df)
+# print(df)
 
 def generate_random_string(length):
     letters = string.ascii_lowercase
@@ -120,5 +141,5 @@ def model(data_df, timestep, number_of_lstm_nodes):
     print(confusion_matrix(y_test, y_pred_bool))
     
 timestep = 5
-model(df, timestep=timestep, number_of_lstm_nodes=4056)
+# model(df, timestep=timestep, number_of_lstm_nodes=4056)
 
