@@ -92,6 +92,7 @@ def generate_random_string(length):
 
 
 output_path = f"output/lstm_{generate_random_string(4)}"
+print("Creating directory", output_path) 
 os.makedirs(output_path)
 
 def model(data_df, timestep, number_of_lstm_nodes):
@@ -113,6 +114,8 @@ def model(data_df, timestep, number_of_lstm_nodes):
     model.add(Dense(units=1, activation='linear'))
 
     model.compile(optimizer='adam', loss='mse')
+    
+    print(model.summary())
 
     print("training")
     model.fit(X_train, y_train, epochs=10, batch_size=64, verbose=2)
@@ -127,8 +130,10 @@ def model(data_df, timestep, number_of_lstm_nodes):
     y_pred = model.predict(X_test, batch_size=32, verbose=2)
     plot_x = [i for i in range(len(y_pred))]
     
-    z_pred = [x for _,x in sorted(zip(y_test, y_pred))]
-    plt.plot(plot_x, z_pred, color="red")
+    pred_0 = [x for y,x in sorted(zip(y_test, y_pred)) if y == 0]
+    pred_1 = [x for y,x in sorted(zip(y_test, y_pred)) if y == 1]
+    plt.plot(plot_x[:len(pred_0)], pred_0, color="blue")
+    plt.plot(plot_x[len(pred_0):], pred_1, color="red")
     plt.savefig(f"{output_path}/lstm_10_epoch_{timestep}_nodes_{number_of_lstm_nodes}.png")
     # plt.plot(plot_x, y_test, color="blue")
     # plt.savefig("plotFinalResults1.png")
@@ -142,9 +147,11 @@ def model(data_df, timestep, number_of_lstm_nodes):
     print("y_pred_bool", y_pred_bool)
     print(np.unique(y, return_counts=True))
 
+    print(f"Accuracy for 10 epochos {number_of_lstm_nodes} lstm nodes and {timestep} timesteps")
     print(classification_report(y_test, y_pred_bool))
     print(confusion_matrix(y_test, y_pred_bool))
     accuracy = np.sum(y_test == y_pred_bool) / len(y_test)
+    print(f"accuracy: {accuracy} and total is {np.sum(y_test == y_pred_bool)} and length is {len(y_test)}")
     return accuracy
     
 all_accuracies = []
