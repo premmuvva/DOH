@@ -1,0 +1,75 @@
+Reached before python lines of file: anomaly_lstm.py start
+Tue Jan 16 13:18:13 CST 2024
+Reached before python lines of file: anomaly_lstm.py
+2024-01-16 13:18:43.706244: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1525] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 14661 MB memory:  -> device: 0, name: Tesla V100-PCIE-16GB, pci bus id: 0000:3b:00.0, compute capability: 7.0
+test run count
+1499612
+random start value  4415921
+benign length 1499612
+malicious length 7538635
+reddy
+         Number of Packets  Direction   Size  Duration  Label
+0                      NaN        NaN    NaN       NaN      0
+1                      NaN        NaN    NaN       NaN      0
+2                      NaN        NaN    NaN       NaN      0
+3                      NaN        NaN    NaN       NaN      0
+4                      NaN        NaN    NaN       NaN      0
+...                    ...        ...    ...       ...    ...
+5915529                1.0        1.0  506.0       0.0      1
+5915530                1.0        0.0  257.0       0.0      1
+5915531                1.0        1.0  504.0       0.0      1
+5915532                1.0        0.0  256.0       0.0      1
+5915533                1.0        1.0  506.0       0.0      1
+
+[2999225 rows x 5 columns]
+Creating directory output/lstm_udng
+count unique values for y.
+(array([0, 1]), array([ 327865, 1144266]))
+(array([0, 1]), array([ 409831, 1430333]))
+1472131
+Traceback (most recent call last):
+  File "/home/x286t435/thesis/time-series/dohv2/anomaly_lstm.py", line 167, in <module>
+    accu = model(df, timestep=timestep, number_of_lstm_nodes=lstm_nodes)
+  File "/home/x286t435/thesis/time-series/dohv2/anomaly_lstm.py", line 112, in model
+    model.add(Conv2D(filters=number_of_filters, kernel_size=(3, 3), activation='relu', input_shape=(1, 4, 5)))
+  File "/opt/software/software/TensorFlow/2.7.1-foss-2021b-CUDA-11.4.1/lib/python3.9/site-packages/tensorflow/python/training/tracking/base.py", line 530, in _method_wrapper
+    result = method(self, *args, **kwargs)
+  File "/opt/software/software/TensorFlow/2.7.1-foss-2021b-CUDA-11.4.1/lib/python3.9/site-packages/keras/utils/traceback_utils.py", line 67, in error_handler
+    raise e.with_traceback(filtered_tb) from None
+  File "/opt/software/software/TensorFlow/2.7.1-foss-2021b-CUDA-11.4.1/lib/python3.9/site-packages/keras/layers/convolutional.py", line 302, in compute_output_shape
+    raise ValueError(
+ValueError: One of the dimensions in the output is <= 0 due to downsampling in conv2d. Consider increasing the input size. Received input shape [None, 1, 4, 5] which would produce output shape with a zero or negative value in a dimension.
+After python lines of file: anomaly_lstm.py
+Tue Jan 16 13:18:44 CST 2024
+
+
+nanu add chestara, ha non-prod cmk undi
+
+kani nenu fetch access untunda?
+naku kms ki kuda access kavali anukunta.
+avarni adagali?
+
+kms permissions ki avarni adagali?
+
+opnen ayindhi
+
+via code ravali kada
+
+ledu
+microsoft login open id
+
+cmks key permission ledu
+
+aa cmk use cheyamantav? cpf ki? 
+
+
+future lo aina local testing ki kavali kada
+ado okati
+
+idi security breach laga kada.
+
+fetch cheskunta
+
+naku kms permission levu
+
+cpf 

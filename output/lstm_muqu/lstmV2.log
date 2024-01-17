@@ -1,0 +1,2279 @@
+Reached before python lines of file: lstmV2.py start
+Tue Jan 16 17:04:47 CST 2024
+Reached before python lines of file: lstmV2.py
+2024-01-16 17:05:17.576190: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1525] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 14661 MB memory:  -> device: 0, name: Tesla V100-PCIE-16GB, pci bus id: 0000:3b:00.0, compute capability: 7.0
+2024-01-16 17:05:21.025531: I tensorflow/stream_executor/cuda/cuda_dnn.cc:366] Loaded cuDNN version 8202
+test run count
+1499612
+random start value  349372
+benign length 1499612
+malicious length 7538635
+reddy
+         Number of Packets  Direction   Size  Duration  Label
+0                      NaN        NaN    NaN       NaN      0
+1                      NaN        NaN    NaN       NaN      0
+2                      NaN        NaN    NaN       NaN      0
+3                      NaN        NaN    NaN       NaN      0
+4                      NaN        NaN    NaN       NaN      0
+...                    ...        ...    ...       ...    ...
+1848980                1.0        1.0  369.0       0.0      1
+1848981                1.0        0.0  174.0       0.0      1
+1848982                1.0        1.0  394.0       0.0      1
+1848983                1.0        0.0  174.0       0.0      1
+1848984                1.0        1.0  394.0       0.0      1
+
+[2999225 rows x 5 columns]
+Creating directory output/lstm_muqu
+count unique values for y.
+(array([0, 1]), array([ 327865, 1142874]))
+(array([0, 1]), array([ 409831, 1428593]))
+1470739
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense (Dense)               (None, 1, 1024)           5120      
+                                                                 
+ lstm (LSTM)                 (None, 1024)              8392704   
+                                                                 
+ dense_1 (Dense)             (None, 1024)              1049600   
+                                                                 
+ dense_2 (Dense)             (None, 1024)              1049600   
+                                                                 
+ dense_3 (Dense)             (None, 1)                 1025      
+                                                                 
+=================================================================
+Total params: 10,498,049
+Trainable params: 10,498,049
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+22981/22981 - 62s - loss: 0.1207 - 62s/epoch - 3ms/step
+Epoch 2/10
+22981/22981 - 59s - loss: 0.0761 - 59s/epoch - 3ms/step
+Epoch 3/10
+22981/22981 - 59s - loss: 0.0705 - 59s/epoch - 3ms/step
+Epoch 4/10
+22981/22981 - 59s - loss: 0.0674 - 59s/epoch - 3ms/step
+Epoch 5/10
+22981/22981 - 59s - loss: 0.0645 - 59s/epoch - 3ms/step
+Epoch 6/10
+22981/22981 - 59s - loss: 0.0629 - 59s/epoch - 3ms/step
+Epoch 7/10
+22981/22981 - 59s - loss: 0.0618 - 59s/epoch - 3ms/step
+Epoch 8/10
+22981/22981 - 59s - loss: 0.0612 - 59s/epoch - 3ms/step
+Epoch 9/10
+22981/22981 - 59s - loss: 0.0606 - 59s/epoch - 3ms/step
+Epoch 10/10
+22981/22981 - 59s - loss: 0.0599 - 59s/epoch - 3ms/step
+saving model as  model_time_step_1_nodes_1024_kvgrmw.h5
+11491/11491 - 12s - 12s/epoch - 1ms/step
+y_pred [[0.9711516 ]
+ [0.94189656]
+ [0.99558264]
+ ...
+ [1.009846  ]
+ [1.0048816 ]
+ [0.98504955]]
+y_pred_bool [[1]
+ [1]
+ [1]
+ ...
+ [1]
+ [1]
+ [1]]
+(array([0, 1]), array([ 409831, 1428593]))
+Accuracy for 10 epochos 1024 lstm nodes and 1 timesteps
+              precision    recall  f1-score   support
+
+           0       0.68      0.92      0.78     81966
+           1       0.98      0.88      0.92    285719
+
+    accuracy                           0.89    367685
+   macro avg       0.83      0.90      0.85    367685
+weighted avg       0.91      0.89      0.89    367685
+
+[[ 75781   6185]
+ [ 35689 250030]]
+accuracy: 0.8861144729863878 and total is 82342243605 and length is 367685
+count unique values for y.
+(array([0, 1]), array([183633, 572890]))
+(array([0, 1]), array([229541, 716113]))
+756523
+Model: "sequential_1"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_4 (Dense)             (None, 2, 1024)           5120      
+                                                                 
+ lstm_1 (LSTM)               (None, 1024)              8392704   
+                                                                 
+ dense_5 (Dense)             (None, 1024)              1049600   
+                                                                 
+ dense_6 (Dense)             (None, 1024)              1049600   
+                                                                 
+ dense_7 (Dense)             (None, 1)                 1025      
+                                                                 
+=================================================================
+Total params: 10,498,049
+Trainable params: 10,498,049
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+11821/11821 - 37s - loss: 0.1234 - 37s/epoch - 3ms/step
+Epoch 2/10
+11821/11821 - 35s - loss: 0.0518 - 35s/epoch - 3ms/step
+Epoch 3/10
+11821/11821 - 35s - loss: 0.0428 - 35s/epoch - 3ms/step
+Epoch 4/10
+11821/11821 - 35s - loss: 0.0360 - 35s/epoch - 3ms/step
+Epoch 5/10
+11821/11821 - 35s - loss: 0.0332 - 35s/epoch - 3ms/step
+Epoch 6/10
+11821/11821 - 35s - loss: 0.0310 - 35s/epoch - 3ms/step
+Epoch 7/10
+11821/11821 - 35s - loss: 0.0301 - 35s/epoch - 3ms/step
+Epoch 8/10
+11821/11821 - 35s - loss: 0.0285 - 35s/epoch - 3ms/step
+Epoch 9/10
+11821/11821 - 35s - loss: 0.0277 - 35s/epoch - 3ms/step
+Epoch 10/10
+11821/11821 - 35s - loss: 0.0277 - 35s/epoch - 3ms/step
+saving model as  model_time_step_2_nodes_1024_zxwszc.h5
+5911/5911 - 7s - 7s/epoch - 1ms/step
+y_pred [[1.0051198 ]
+ [1.0207791 ]
+ [1.0091661 ]
+ ...
+ [0.04015577]
+ [1.0140036 ]
+ [0.9940156 ]]
+y_pred_bool [[1]
+ [1]
+ [1]
+ ...
+ [0]
+ [1]
+ [1]]
+(array([0, 1]), array([229541, 716113]))
+Accuracy for 10 epochos 1024 lstm nodes and 2 timesteps
+              precision    recall  f1-score   support
+
+           0       0.81      0.98      0.89     45908
+           1       0.99      0.93      0.96    143223
+
+    accuracy                           0.94    189131
+   macro avg       0.90      0.95      0.92    189131
+weighted avg       0.95      0.94      0.94    189131
+
+[[ 44885   1023]
+ [ 10610 132613]]
+accuracy: 0.9384923677239585 and total is 21687413288 and length is 189131
+count unique values for y.
+(array([0, 1]), array([135376, 382848]))
+(array([0, 1]), array([169220, 478561]))
+518224
+Model: "sequential_2"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_8 (Dense)             (None, 3, 1024)           5120      
+                                                                 
+ lstm_2 (LSTM)               (None, 1024)              8392704   
+                                                                 
+ dense_9 (Dense)             (None, 1024)              1049600   
+                                                                 
+ dense_10 (Dense)            (None, 1024)              1049600   
+                                                                 
+ dense_11 (Dense)            (None, 1)                 1025      
+                                                                 
+=================================================================
+Total params: 10,498,049
+Trainable params: 10,498,049
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+8098/8098 - 28s - loss: 0.1088 - 28s/epoch - 3ms/step
+Epoch 2/10
+8098/8098 - 26s - loss: 0.0420 - 26s/epoch - 3ms/step
+Epoch 3/10
+8098/8098 - 26s - loss: 0.0332 - 26s/epoch - 3ms/step
+Epoch 4/10
+8098/8098 - 26s - loss: 0.0255 - 26s/epoch - 3ms/step
+Epoch 5/10
+8098/8098 - 26s - loss: 0.0210 - 26s/epoch - 3ms/step
+Epoch 6/10
+8098/8098 - 26s - loss: 0.0193 - 26s/epoch - 3ms/step
+Epoch 7/10
+8098/8098 - 26s - loss: 0.0185 - 26s/epoch - 3ms/step
+Epoch 8/10
+8098/8098 - 26s - loss: 0.0171 - 26s/epoch - 3ms/step
+Epoch 9/10
+8098/8098 - 26s - loss: 0.0162 - 26s/epoch - 3ms/step
+Epoch 10/10
+8098/8098 - 26s - loss: 0.0159 - 26s/epoch - 3ms/step
+saving model as  model_time_step_3_nodes_1024_smzhjm.h5
+4049/4049 - 5s - 5s/epoch - 1ms/step
+y_pred [[0.98810136]
+ [0.98746145]
+ [0.98789746]
+ ...
+ [0.06550619]
+ [0.98752236]
+ [0.9880177 ]]
+y_pred_bool [[1]
+ [1]
+ [1]
+ ...
+ [0]
+ [1]
+ [1]]
+(array([0, 1]), array([169220, 478561]))
+Accuracy for 10 epochos 1024 lstm nodes and 3 timesteps
+              precision    recall  f1-score   support
+
+           0       0.92      0.99      0.95     33844
+           1       1.00      0.97      0.98     95713
+
+    accuracy                           0.97    129557
+   macro avg       0.96      0.98      0.97    129557
+weighted avg       0.98      0.97      0.97    129557
+
+[[33393   451]
+ [ 2965 92748]]
+accuracy: 0.9736332270737976 and total is 10150856039 and length is 129557
+count unique values for y.
+(array([0, 1]), array([111426, 287881]))
+(array([0, 1]), array([139283, 359851]))
+399307
+Model: "sequential_3"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_12 (Dense)            (None, 4, 1024)           5120      
+                                                                 
+ lstm_3 (LSTM)               (None, 1024)              8392704   
+                                                                 
+ dense_13 (Dense)            (None, 1024)              1049600   
+                                                                 
+ dense_14 (Dense)            (None, 1024)              1049600   
+                                                                 
+ dense_15 (Dense)            (None, 1)                 1025      
+                                                                 
+=================================================================
+Total params: 10,498,049
+Trainable params: 10,498,049
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+6240/6240 - 24s - loss: 0.1105 - 24s/epoch - 4ms/step
+Epoch 2/10
+6240/6240 - 22s - loss: 0.0761 - 22s/epoch - 4ms/step
+Epoch 3/10
+6240/6240 - 22s - loss: 0.0333 - 22s/epoch - 4ms/step
+Epoch 4/10
+6240/6240 - 22s - loss: 0.0246 - 22s/epoch - 4ms/step
+Epoch 5/10
+6240/6240 - 22s - loss: 0.0221 - 22s/epoch - 4ms/step
+Epoch 6/10
+6240/6240 - 22s - loss: 0.0196 - 22s/epoch - 4ms/step
+Epoch 7/10
+6240/6240 - 22s - loss: 0.0182 - 22s/epoch - 4ms/step
+Epoch 8/10
+6240/6240 - 22s - loss: 0.0176 - 22s/epoch - 4ms/step
+Epoch 9/10
+6240/6240 - 23s - loss: 0.0166 - 23s/epoch - 4ms/step
+Epoch 10/10
+6240/6240 - 23s - loss: 0.0159 - 23s/epoch - 4ms/step
+saving model as  model_time_step_4_nodes_1024_ecjfqt.h5
+3120/3120 - 4s - 4s/epoch - 1ms/step
+y_pred [[0.00165135]
+ [0.00165135]
+ [1.0022802 ]
+ ...
+ [1.0063559 ]
+ [0.00165135]
+ [0.99827176]]
+y_pred_bool [[0]
+ [0]
+ [1]
+ ...
+ [1]
+ [0]
+ [1]]
+(array([0, 1]), array([139283, 359851]))
+Accuracy for 10 epochos 1024 lstm nodes and 4 timesteps
+              precision    recall  f1-score   support
+
+           0       0.93      0.99      0.96     27857
+           1       1.00      0.97      0.98     71970
+
+    accuracy                           0.98     99827
+   macro avg       0.96      0.98      0.97     99827
+weighted avg       0.98      0.98      0.98     99827
+
+[[27612   245]
+ [ 1974 69996]]
+accuracy: 0.9777715447724563 and total is 5879421972 and length is 99827
+count unique values for y.
+(array([0, 1]), array([ 96946, 230849]))
+(array([0, 1]), array([121183, 288561]))
+327795
+Model: "sequential_4"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_16 (Dense)            (None, 5, 1024)           5120      
+                                                                 
+ lstm_4 (LSTM)               (None, 1024)              8392704   
+                                                                 
+ dense_17 (Dense)            (None, 1024)              1049600   
+                                                                 
+ dense_18 (Dense)            (None, 1024)              1049600   
+                                                                 
+ dense_19 (Dense)            (None, 1)                 1025      
+                                                                 
+=================================================================
+Total params: 10,498,049
+Trainable params: 10,498,049
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+5122/5122 - 22s - loss: 0.0979 - 22s/epoch - 4ms/step
+Epoch 2/10
+5122/5122 - 21s - loss: 0.0789 - 21s/epoch - 4ms/step
+Epoch 3/10
+5122/5122 - 21s - loss: 0.0414 - 21s/epoch - 4ms/step
+Epoch 4/10
+5122/5122 - 21s - loss: 0.0276 - 21s/epoch - 4ms/step
+Epoch 5/10
+5122/5122 - 21s - loss: 0.0234 - 21s/epoch - 4ms/step
+Epoch 6/10
+5122/5122 - 21s - loss: 0.0202 - 21s/epoch - 4ms/step
+Epoch 7/10
+5122/5122 - 21s - loss: 0.0173 - 21s/epoch - 4ms/step
+Epoch 8/10
+5122/5122 - 21s - loss: 0.0166 - 21s/epoch - 4ms/step
+Epoch 9/10
+5122/5122 - 21s - loss: 0.0147 - 21s/epoch - 4ms/step
+Epoch 10/10
+5122/5122 - 21s - loss: 0.0149 - 21s/epoch - 4ms/step
+saving model as  model_time_step_5_nodes_1024_cqmblh.h5
+2561/2561 - 4s - 4s/epoch - 1ms/step
+y_pred [[0.02956036]
+ [1.0165988 ]
+ [0.9820268 ]
+ ...
+ [1.019472  ]
+ [0.02956036]
+ [1.0315441 ]]
+y_pred_bool [[0]
+ [1]
+ [1]
+ ...
+ [1]
+ [0]
+ [1]]
+(array([0, 1]), array([121183, 288561]))
+Accuracy for 10 epochos 1024 lstm nodes and 5 timesteps
+              precision    recall  f1-score   support
+
+           0       0.91      1.00      0.95     24237
+           1       1.00      0.96      0.98     57712
+
+    accuracy                           0.97     81949
+   macro avg       0.95      0.98      0.96     81949
+weighted avg       0.97      0.97      0.97     81949
+
+[[24131   106]
+ [ 2437 55275]]
+accuracy: 0.968968504801767 and total is 3840076888 and length is 81949
+count unique values for y.
+(array([0, 1]), array([ 87297, 192850]))
+(array([0, 1]), array([109121, 241063]))
+280147
+Model: "sequential_5"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_20 (Dense)            (None, 6, 1024)           5120      
+                                                                 
+ lstm_5 (LSTM)               (None, 1024)              8392704   
+                                                                 
+ dense_21 (Dense)            (None, 1024)              1049600   
+                                                                 
+ dense_22 (Dense)            (None, 1024)              1049600   
+                                                                 
+ dense_23 (Dense)            (None, 1)                 1025      
+                                                                 
+=================================================================
+Total params: 10,498,049
+Trainable params: 10,498,049
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+4378/4378 - 20s - loss: 0.0997 - 20s/epoch - 5ms/step
+Epoch 2/10
+4378/4378 - 18s - loss: 0.0770 - 18s/epoch - 4ms/step
+Epoch 3/10
+4378/4378 - 18s - loss: 0.0775 - 18s/epoch - 4ms/step
+Epoch 4/10
+4378/4378 - 18s - loss: 0.0546 - 18s/epoch - 4ms/step
+Epoch 5/10
+4378/4378 - 18s - loss: 0.0434 - 18s/epoch - 4ms/step
+Epoch 6/10
+4378/4378 - 18s - loss: 0.0361 - 18s/epoch - 4ms/step
+Epoch 7/10
+4378/4378 - 18s - loss: 0.0320 - 18s/epoch - 4ms/step
+Epoch 8/10
+4378/4378 - 18s - loss: 0.0302 - 18s/epoch - 4ms/step
+Epoch 9/10
+4378/4378 - 18s - loss: 0.0312 - 18s/epoch - 4ms/step
+Epoch 10/10
+4378/4378 - 18s - loss: 0.0286 - 18s/epoch - 4ms/step
+saving model as  model_time_step_6_nodes_1024_yppcbh.h5
+2189/2189 - 3s - 3s/epoch - 2ms/step
+y_pred [[0.05497134]
+ [0.9721925 ]
+ [0.08297965]
+ ...
+ [0.05046919]
+ [0.00460008]
+ [0.08297965]]
+y_pred_bool [[0]
+ [1]
+ [0]
+ ...
+ [0]
+ [0]
+ [0]]
+(array([0, 1]), array([109121, 241063]))
+Accuracy for 10 epochos 1024 lstm nodes and 6 timesteps
+              precision    recall  f1-score   support
+
+           0       0.91      0.98      0.95     21824
+           1       0.99      0.96      0.97     48213
+
+    accuracy                           0.97     70037
+   macro avg       0.95      0.97      0.96     70037
+weighted avg       0.97      0.97      0.97     70037
+
+[[21411   413]
+ [ 2008 46205]]
+accuracy: 0.9654325570769736 and total is 2758689890 and length is 70037
+count unique values for y.
+(array([0, 1]), array([ 80412, 165699]))
+(array([0, 1]), array([100515, 207124]))
+246111
+Model: "sequential_6"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_24 (Dense)            (None, 7, 1024)           5120      
+                                                                 
+ lstm_6 (LSTM)               (None, 1024)              8392704   
+                                                                 
+ dense_25 (Dense)            (None, 1024)              1049600   
+                                                                 
+ dense_26 (Dense)            (None, 1024)              1049600   
+                                                                 
+ dense_27 (Dense)            (None, 1)                 1025      
+                                                                 
+=================================================================
+Total params: 10,498,049
+Trainable params: 10,498,049
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+3846/3846 - 20s - loss: 0.0963 - 20s/epoch - 5ms/step
+Epoch 2/10
+3846/3846 - 18s - loss: 0.0775 - 18s/epoch - 5ms/step
+Epoch 3/10
+3846/3846 - 18s - loss: 0.0700 - 18s/epoch - 5ms/step
+Epoch 4/10
+3846/3846 - 18s - loss: 0.0502 - 18s/epoch - 5ms/step
+Epoch 5/10
+3846/3846 - 18s - loss: 0.0291 - 18s/epoch - 5ms/step
+Epoch 6/10
+3846/3846 - 18s - loss: 0.0234 - 18s/epoch - 5ms/step
+Epoch 7/10
+3846/3846 - 18s - loss: 0.0208 - 18s/epoch - 5ms/step
+Epoch 8/10
+3846/3846 - 18s - loss: 0.0185 - 18s/epoch - 5ms/step
+Epoch 9/10
+3846/3846 - 18s - loss: 0.0163 - 18s/epoch - 5ms/step
+Epoch 10/10
+3846/3846 - 18s - loss: 0.0149 - 18s/epoch - 5ms/step
+saving model as  model_time_step_7_nodes_1024_anblcg.h5
+1923/1923 - 3s - 3s/epoch - 2ms/step
+y_pred [[ 1.0001402 ]
+ [ 0.88563323]
+ [ 0.9852021 ]
+ ...
+ [-0.02726319]
+ [-0.02324024]
+ [ 0.9940499 ]]
+y_pred_bool [[1]
+ [1]
+ [1]
+ ...
+ [0]
+ [0]
+ [1]]
+(array([0, 1]), array([100515, 207124]))
+Accuracy for 10 epochos 1024 lstm nodes and 7 timesteps
+              precision    recall  f1-score   support
+
+           0       0.93      0.99      0.96     20103
+           1       1.00      0.96      0.98     41425
+
+    accuracy                           0.97     61528
+   macro avg       0.96      0.98      0.97     61528
+weighted avg       0.98      0.97      0.97     61528
+
+[[19957   146]
+ [ 1465 39960]]
+accuracy: 0.9738167988558055 and total is 2092037516 and length is 61528
+count unique values for y.
+(array([0, 1]), array([ 75296, 145370]))
+(array([0, 1]), array([ 94120, 181713]))
+220666
+Model: "sequential_7"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_28 (Dense)            (None, 8, 1024)           5120      
+                                                                 
+ lstm_7 (LSTM)               (None, 1024)              8392704   
+                                                                 
+ dense_29 (Dense)            (None, 1024)              1049600   
+                                                                 
+ dense_30 (Dense)            (None, 1024)              1049600   
+                                                                 
+ dense_31 (Dense)            (None, 1)                 1025      
+                                                                 
+=================================================================
+Total params: 10,498,049
+Trainable params: 10,498,049
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+3448/3448 - 18s - loss: 0.0930 - 18s/epoch - 5ms/step
+Epoch 2/10
+3448/3448 - 17s - loss: 0.0674 - 17s/epoch - 5ms/step
+Epoch 3/10
+3448/3448 - 17s - loss: 0.0670 - 17s/epoch - 5ms/step
+Epoch 4/10
+3448/3448 - 17s - loss: 0.0557 - 17s/epoch - 5ms/step
+Epoch 5/10
+3448/3448 - 17s - loss: 0.0321 - 17s/epoch - 5ms/step
+Epoch 6/10
+3448/3448 - 17s - loss: 0.0213 - 17s/epoch - 5ms/step
+Epoch 7/10
+3448/3448 - 17s - loss: 0.0173 - 17s/epoch - 5ms/step
+Epoch 8/10
+3448/3448 - 17s - loss: 0.0143 - 17s/epoch - 5ms/step
+Epoch 9/10
+3448/3448 - 17s - loss: 0.0126 - 17s/epoch - 5ms/step
+Epoch 10/10
+3448/3448 - 17s - loss: 0.0109 - 17s/epoch - 5ms/step
+saving model as  model_time_step_8_nodes_1024_dhnskq.h5
+1724/1724 - 3s - 3s/epoch - 2ms/step
+y_pred [[ 1.0000958 ]
+ [ 0.9916638 ]
+ [ 0.9919368 ]
+ ...
+ [ 0.99255216]
+ [-0.03566232]
+ [ 1.0015159 ]]
+y_pred_bool [[1]
+ [1]
+ [1]
+ ...
+ [1]
+ [0]
+ [1]]
+(array([0, 1]), array([ 94120, 181713]))
+Accuracy for 10 epochos 1024 lstm nodes and 8 timesteps
+              precision    recall  f1-score   support
+
+           0       0.90      1.00      0.95     18824
+           1       1.00      0.94      0.97     36343
+
+    accuracy                           0.96     55167
+   macro avg       0.95      0.97      0.96     55167
+weighted avg       0.97      0.96      0.96     55167
+
+[[18779    45]
+ [ 2079 34264]]
+accuracy: 0.9614987220621023 and total is 1639522979 and length is 55167
+count unique values for y.
+(array([0, 1]), array([ 71237, 129513]))
+(array([0, 1]), array([ 89047, 161891]))
+200750
+Model: "sequential_8"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_32 (Dense)            (None, 9, 1024)           5120      
+                                                                 
+ lstm_8 (LSTM)               (None, 1024)              8392704   
+                                                                 
+ dense_33 (Dense)            (None, 1024)              1049600   
+                                                                 
+ dense_34 (Dense)            (None, 1024)              1049600   
+                                                                 
+ dense_35 (Dense)            (None, 1)                 1025      
+                                                                 
+=================================================================
+Total params: 10,498,049
+Trainable params: 10,498,049
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+3137/3137 - 18s - loss: 0.0906 - 18s/epoch - 6ms/step
+Epoch 2/10
+3137/3137 - 16s - loss: 0.0637 - 16s/epoch - 5ms/step
+Epoch 3/10
+3137/3137 - 16s - loss: 0.0656 - 16s/epoch - 5ms/step
+Epoch 4/10
+3137/3137 - 16s - loss: 0.0594 - 16s/epoch - 5ms/step
+Epoch 5/10
+3137/3137 - 16s - loss: 0.0551 - 16s/epoch - 5ms/step
+Epoch 6/10
+3137/3137 - 16s - loss: 0.0393 - 16s/epoch - 5ms/step
+Epoch 7/10
+3137/3137 - 16s - loss: 0.0291 - 16s/epoch - 5ms/step
+Epoch 8/10
+3137/3137 - 16s - loss: 0.0224 - 16s/epoch - 5ms/step
+Epoch 9/10
+3137/3137 - 16s - loss: 0.0181 - 16s/epoch - 5ms/step
+Epoch 10/10
+3137/3137 - 16s - loss: 0.0171 - 16s/epoch - 5ms/step
+saving model as  model_time_step_9_nodes_1024_alhsan.h5
+1569/1569 - 3s - 3s/epoch - 2ms/step
+y_pred [[-0.00398549]
+ [ 0.99380684]
+ [ 0.9813293 ]
+ ...
+ [ 0.99563885]
+ [ 0.01190773]
+ [ 0.9948548 ]]
+y_pred_bool [[0]
+ [1]
+ [1]
+ ...
+ [1]
+ [0]
+ [1]]
+(array([0, 1]), array([ 89047, 161891]))
+Accuracy for 10 epochos 1024 lstm nodes and 9 timesteps
+              precision    recall  f1-score   support
+
+           0       0.93      0.99      0.96     17810
+           1       0.99      0.96      0.98     32378
+
+    accuracy                           0.97     50188
+   macro avg       0.96      0.97      0.97     50188
+weighted avg       0.97      0.97      0.97     50188
+
+[[17651   159]
+ [ 1330 31048]]
+accuracy: 0.9703315533593688 and total is 1348471856 and length is 50188
+count unique values for y.
+(array([0, 1]), array([ 68090, 116845]))
+(array([0, 1]), array([ 85112, 146057]))
+184935
+Model: "sequential_9"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_36 (Dense)            (None, 10, 1024)          5120      
+                                                                 
+ lstm_9 (LSTM)               (None, 1024)              8392704   
+                                                                 
+ dense_37 (Dense)            (None, 1024)              1049600   
+                                                                 
+ dense_38 (Dense)            (None, 1024)              1049600   
+                                                                 
+ dense_39 (Dense)            (None, 1)                 1025      
+                                                                 
+=================================================================
+Total params: 10,498,049
+Trainable params: 10,498,049
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+2890/2890 - 17s - loss: 0.0848 - 17s/epoch - 6ms/step
+Epoch 2/10
+2890/2890 - 16s - loss: 0.0626 - 16s/epoch - 5ms/step
+Epoch 3/10
+2890/2890 - 16s - loss: 0.0581 - 16s/epoch - 5ms/step
+Epoch 4/10
+2890/2890 - 16s - loss: 0.0561 - 16s/epoch - 5ms/step
+Epoch 5/10
+2890/2890 - 16s - loss: 0.0546 - 16s/epoch - 5ms/step
+Epoch 6/10
+2890/2890 - 16s - loss: 0.0509 - 16s/epoch - 5ms/step
+Epoch 7/10
+2890/2890 - 16s - loss: 0.0415 - 16s/epoch - 5ms/step
+Epoch 8/10
+2890/2890 - 16s - loss: 0.0283 - 16s/epoch - 5ms/step
+Epoch 9/10
+2890/2890 - 16s - loss: 0.0222 - 16s/epoch - 5ms/step
+Epoch 10/10
+2890/2890 - 16s - loss: 0.0207 - 16s/epoch - 5ms/step
+saving model as  model_time_step_10_nodes_1024_nkvisl.h5
+1445/1445 - 3s - 3s/epoch - 2ms/step
+y_pred [[0.09585145]
+ [0.99367166]
+ [0.03469488]
+ ...
+ [1.0064532 ]
+ [0.9986552 ]
+ [0.9974749 ]]
+y_pred_bool [[0]
+ [1]
+ [0]
+ ...
+ [1]
+ [1]
+ [1]]
+(array([0, 1]), array([ 85112, 146057]))
+Accuracy for 10 epochos 1024 lstm nodes and 10 timesteps
+              precision    recall  f1-score   support
+
+           0       0.94      0.99      0.96     17022
+           1       0.99      0.96      0.98     29212
+
+    accuracy                           0.97     46234
+   macro avg       0.97      0.97      0.97     46234
+weighted avg       0.97      0.97      0.97     46234
+
+[[16782   240]
+ [ 1092 28120]]
+accuracy: 0.9711900333088204 and total is 1132703548 and length is 46234
+count unique values for y.
+(array([0, 1]), array([ 327865, 1142874]))
+(array([0, 1]), array([ 409831, 1428593]))
+1470739
+Model: "sequential_10"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_40 (Dense)            (None, 1, 2048)           10240     
+                                                                 
+ lstm_10 (LSTM)              (None, 2048)              33562624  
+                                                                 
+ dense_41 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_42 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_43 (Dense)            (None, 1)                 2049      
+                                                                 
+=================================================================
+Total params: 41,967,617
+Trainable params: 41,967,617
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+22981/22981 - 150s - loss: 0.1239 - 150s/epoch - 7ms/step
+Epoch 2/10
+22981/22981 - 148s - loss: 0.0713 - 148s/epoch - 6ms/step
+Epoch 3/10
+22981/22981 - 148s - loss: 0.0670 - 148s/epoch - 6ms/step
+Epoch 4/10
+22981/22981 - 148s - loss: 0.0639 - 148s/epoch - 6ms/step
+Epoch 5/10
+22981/22981 - 148s - loss: 0.0632 - 148s/epoch - 6ms/step
+Epoch 6/10
+22981/22981 - 148s - loss: 0.0624 - 148s/epoch - 6ms/step
+Epoch 7/10
+22981/22981 - 148s - loss: 0.0616 - 148s/epoch - 6ms/step
+Epoch 8/10
+22981/22981 - 148s - loss: 0.0613 - 148s/epoch - 6ms/step
+Epoch 9/10
+22981/22981 - 148s - loss: 0.0607 - 148s/epoch - 6ms/step
+Epoch 10/10
+22981/22981 - 148s - loss: 0.0606 - 148s/epoch - 6ms/step
+saving model as  model_time_step_1_nodes_2048_fkfgdm.h5
+11491/11491 - 24s - 24s/epoch - 2ms/step
+y_pred [[0.93107903]
+ [0.77886057]
+ [1.016425  ]
+ ...
+ [0.99086905]
+ [0.99628866]
+ [0.9716464 ]]
+y_pred_bool [[1]
+ [0]
+ [1]
+ ...
+ [1]
+ [1]
+ [1]]
+(array([0, 1]), array([ 409831, 1428593]))
+Accuracy for 10 epochos 2048 lstm nodes and 1 timesteps
+              precision    recall  f1-score   support
+
+           0       0.70      0.91      0.79     81966
+           1       0.97      0.89      0.93    285719
+
+    accuracy                           0.89    367685
+   macro avg       0.84      0.90      0.86    367685
+weighted avg       0.91      0.89      0.90    367685
+
+[[ 74373   7593]
+ [ 31334 254385]]
+accuracy: 0.8941294858370616 and total is 83516472144 and length is 367685
+count unique values for y.
+(array([0, 1]), array([183633, 572890]))
+(array([0, 1]), array([229541, 716113]))
+756523
+Model: "sequential_11"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_44 (Dense)            (None, 2, 2048)           10240     
+                                                                 
+ lstm_11 (LSTM)              (None, 2048)              33562624  
+                                                                 
+ dense_45 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_46 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_47 (Dense)            (None, 1)                 2049      
+                                                                 
+=================================================================
+Total params: 41,967,617
+Trainable params: 41,967,617
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+11821/11821 - 91s - loss: 0.1513 - 91s/epoch - 8ms/step
+Epoch 2/10
+11821/11821 - 90s - loss: 0.0574 - 90s/epoch - 8ms/step
+Epoch 3/10
+11821/11821 - 90s - loss: 0.0444 - 90s/epoch - 8ms/step
+Epoch 4/10
+11821/11821 - 90s - loss: 0.0417 - 90s/epoch - 8ms/step
+Epoch 5/10
+11821/11821 - 90s - loss: 0.0392 - 90s/epoch - 8ms/step
+Epoch 6/10
+11821/11821 - 90s - loss: 0.0347 - 90s/epoch - 8ms/step
+Epoch 7/10
+11821/11821 - 90s - loss: 0.0342 - 90s/epoch - 8ms/step
+Epoch 8/10
+11821/11821 - 90s - loss: 0.0317 - 90s/epoch - 8ms/step
+Epoch 9/10
+11821/11821 - 90s - loss: 0.0307 - 90s/epoch - 8ms/step
+Epoch 10/10
+11821/11821 - 90s - loss: 0.0292 - 90s/epoch - 8ms/step
+saving model as  model_time_step_2_nodes_2048_xkttow.h5
+5911/5911 - 14s - 14s/epoch - 2ms/step
+y_pred [[0.994855  ]
+ [1.0207417 ]
+ [1.0048137 ]
+ ...
+ [0.05289215]
+ [1.0044873 ]
+ [0.9596934 ]]
+y_pred_bool [[1]
+ [1]
+ [1]
+ ...
+ [0]
+ [1]
+ [1]]
+(array([0, 1]), array([229541, 716113]))
+Accuracy for 10 epochos 2048 lstm nodes and 2 timesteps
+              precision    recall  f1-score   support
+
+           0       0.85      0.97      0.91     45908
+           1       0.99      0.95      0.97    143223
+
+    accuracy                           0.95    189131
+   macro avg       0.92      0.96      0.94    189131
+weighted avg       0.96      0.95      0.95    189131
+
+[[ 44719   1189]
+ [  7692 135531]]
+accuracy: 0.9530431288366265 and total is 21987532748 and length is 189131
+count unique values for y.
+(array([0, 1]), array([135376, 382848]))
+(array([0, 1]), array([169220, 478561]))
+518224
+Model: "sequential_12"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_48 (Dense)            (None, 3, 2048)           10240     
+                                                                 
+ lstm_12 (LSTM)              (None, 2048)              33562624  
+                                                                 
+ dense_49 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_50 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_51 (Dense)            (None, 1)                 2049      
+                                                                 
+=================================================================
+Total params: 41,967,617
+Trainable params: 41,967,617
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+8098/8098 - 76s - loss: 0.2298 - 76s/epoch - 9ms/step
+Epoch 2/10
+8098/8098 - 74s - loss: 0.0853 - 74s/epoch - 9ms/step
+Epoch 3/10
+8098/8098 - 74s - loss: 0.0451 - 74s/epoch - 9ms/step
+Epoch 4/10
+8098/8098 - 74s - loss: 0.0390 - 74s/epoch - 9ms/step
+Epoch 5/10
+8098/8098 - 74s - loss: 0.0359 - 74s/epoch - 9ms/step
+Epoch 6/10
+8098/8098 - 74s - loss: 0.0340 - 74s/epoch - 9ms/step
+Epoch 7/10
+8098/8098 - 74s - loss: 0.0317 - 74s/epoch - 9ms/step
+Epoch 8/10
+8098/8098 - 74s - loss: 0.0301 - 74s/epoch - 9ms/step
+Epoch 9/10
+8098/8098 - 74s - loss: 0.0295 - 74s/epoch - 9ms/step
+Epoch 10/10
+8098/8098 - 74s - loss: 0.0292 - 74s/epoch - 9ms/step
+saving model as  model_time_step_3_nodes_2048_dojowf.h5
+4049/4049 - 11s - 11s/epoch - 3ms/step
+y_pred [[1.0015471]
+ [1.004231 ]
+ [1.004647 ]
+ ...
+ [0.3375625]
+ [1.0023379]
+ [1.0044239]]
+y_pred_bool [[1]
+ [1]
+ [1]
+ ...
+ [0]
+ [1]
+ [1]]
+(array([0, 1]), array([169220, 478561]))
+Accuracy for 10 epochos 2048 lstm nodes and 3 timesteps
+              precision    recall  f1-score   support
+
+           0       0.85      0.98      0.91     33844
+           1       0.99      0.94      0.97     95713
+
+    accuracy                           0.95    129557
+   macro avg       0.92      0.96      0.94    129557
+weighted avg       0.96      0.95      0.95    129557
+
+[[33323   521]
+ [ 5976 89737]]
+accuracy: 0.9498521886119623 and total is 9968899310 and length is 129557
+count unique values for y.
+(array([0, 1]), array([111426, 287881]))
+(array([0, 1]), array([139283, 359851]))
+399307
+Model: "sequential_13"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_52 (Dense)            (None, 4, 2048)           10240     
+                                                                 
+ lstm_13 (LSTM)              (None, 2048)              33562624  
+                                                                 
+ dense_53 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_54 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_55 (Dense)            (None, 1)                 2049      
+                                                                 
+=================================================================
+Total params: 41,967,617
+Trainable params: 41,967,617
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+6240/6240 - 64s - loss: 0.2118 - 64s/epoch - 10ms/step
+Epoch 2/10
+6240/6240 - 62s - loss: 0.0967 - 62s/epoch - 10ms/step
+Epoch 3/10
+6240/6240 - 62s - loss: 0.0649 - 62s/epoch - 10ms/step
+Epoch 4/10
+6240/6240 - 62s - loss: 0.0425 - 62s/epoch - 10ms/step
+Epoch 5/10
+6240/6240 - 62s - loss: 0.0365 - 62s/epoch - 10ms/step
+Epoch 6/10
+6240/6240 - 63s - loss: 0.0347 - 63s/epoch - 10ms/step
+Epoch 7/10
+6240/6240 - 63s - loss: 0.0343 - 63s/epoch - 10ms/step
+Epoch 8/10
+6240/6240 - 63s - loss: 0.0304 - 63s/epoch - 10ms/step
+Epoch 9/10
+6240/6240 - 63s - loss: 0.0310 - 63s/epoch - 10ms/step
+Epoch 10/10
+6240/6240 - 63s - loss: 0.0274 - 63s/epoch - 10ms/step
+saving model as  model_time_step_4_nodes_2048_oqqljc.h5
+3120/3120 - 9s - 9s/epoch - 3ms/step
+y_pred [[0.05095002]
+ [0.05095002]
+ [1.000261  ]
+ ...
+ [0.9992163 ]
+ [0.05095002]
+ [1.0015502 ]]
+y_pred_bool [[0]
+ [0]
+ [1]
+ ...
+ [1]
+ [0]
+ [1]]
+(array([0, 1]), array([139283, 359851]))
+Accuracy for 10 epochos 2048 lstm nodes and 4 timesteps
+              precision    recall  f1-score   support
+
+           0       0.85      0.99      0.91     27857
+           1       0.99      0.93      0.96     71970
+
+    accuracy                           0.95     99827
+   macro avg       0.92      0.96      0.94     99827
+weighted avg       0.95      0.95      0.95     99827
+
+[[27519   338]
+ [ 4975 66995]]
+accuracy: 0.9467779258116542 and total is 5751141368 and length is 99827
+count unique values for y.
+(array([0, 1]), array([ 96946, 230849]))
+(array([0, 1]), array([121183, 288561]))
+327795
+Model: "sequential_14"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_56 (Dense)            (None, 5, 2048)           10240     
+                                                                 
+ lstm_14 (LSTM)              (None, 2048)              33562624  
+                                                                 
+ dense_57 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_58 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_59 (Dense)            (None, 1)                 2049      
+                                                                 
+=================================================================
+Total params: 41,967,617
+Trainable params: 41,967,617
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+5122/5122 - 58s - loss: 0.1421 - 58s/epoch - 11ms/step
+Epoch 2/10
+5122/5122 - 56s - loss: 0.0898 - 56s/epoch - 11ms/step
+Epoch 3/10
+5122/5122 - 56s - loss: 0.0811 - 56s/epoch - 11ms/step
+Epoch 4/10
+5122/5122 - 56s - loss: 0.0542 - 56s/epoch - 11ms/step
+Epoch 5/10
+5122/5122 - 56s - loss: 0.0331 - 56s/epoch - 11ms/step
+Epoch 6/10
+5122/5122 - 56s - loss: 0.0294 - 56s/epoch - 11ms/step
+Epoch 7/10
+5122/5122 - 56s - loss: 0.0257 - 56s/epoch - 11ms/step
+Epoch 8/10
+5122/5122 - 56s - loss: 0.0226 - 56s/epoch - 11ms/step
+Epoch 9/10
+5122/5122 - 56s - loss: 0.0215 - 56s/epoch - 11ms/step
+Epoch 10/10
+5122/5122 - 56s - loss: 0.0197 - 56s/epoch - 11ms/step
+saving model as  model_time_step_5_nodes_2048_vmdniz.h5
+2561/2561 - 8s - 8s/epoch - 3ms/step
+y_pred [[0.66621023]
+ [0.97989976]
+ [0.977305  ]
+ ...
+ [0.98165256]
+ [0.02333653]
+ [0.98559266]]
+y_pred_bool [[0]
+ [1]
+ [1]
+ ...
+ [1]
+ [0]
+ [1]]
+(array([0, 1]), array([121183, 288561]))
+Accuracy for 10 epochos 2048 lstm nodes and 5 timesteps
+              precision    recall  f1-score   support
+
+           0       0.95      0.98      0.96     24237
+           1       0.99      0.98      0.98     57712
+
+    accuracy                           0.98     81949
+   macro avg       0.97      0.98      0.97     81949
+weighted avg       0.98      0.98      0.98     81949
+
+[[23636   601]
+ [ 1314 56398]]
+accuracy: 0.976631807587646 and total is 3894239438 and length is 81949
+count unique values for y.
+(array([0, 1]), array([ 87297, 192850]))
+(array([0, 1]), array([109121, 241063]))
+280147
+Model: "sequential_15"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_60 (Dense)            (None, 6, 2048)           10240     
+                                                                 
+ lstm_15 (LSTM)              (None, 2048)              33562624  
+                                                                 
+ dense_61 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_62 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_63 (Dense)            (None, 1)                 2049      
+                                                                 
+=================================================================
+Total params: 41,967,617
+Trainable params: 41,967,617
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+4378/4378 - 55s - loss: 0.2887 - 55s/epoch - 13ms/step
+Epoch 2/10
+4378/4378 - 54s - loss: 0.0806 - 54s/epoch - 12ms/step
+Epoch 3/10
+4378/4378 - 54s - loss: 0.0766 - 54s/epoch - 12ms/step
+Epoch 4/10
+4378/4378 - 54s - loss: 0.0750 - 54s/epoch - 12ms/step
+Epoch 5/10
+4378/4378 - 54s - loss: 0.0457 - 54s/epoch - 12ms/step
+Epoch 6/10
+4378/4378 - 54s - loss: 0.0299 - 54s/epoch - 12ms/step
+Epoch 7/10
+4378/4378 - 54s - loss: 0.0225 - 54s/epoch - 12ms/step
+Epoch 8/10
+4378/4378 - 54s - loss: 0.0210 - 54s/epoch - 12ms/step
+Epoch 9/10
+4378/4378 - 54s - loss: 0.0187 - 54s/epoch - 12ms/step
+Epoch 10/10
+4378/4378 - 54s - loss: 0.0167 - 54s/epoch - 12ms/step
+saving model as  model_time_step_6_nodes_2048_tksect.h5
+2189/2189 - 7s - 7s/epoch - 3ms/step
+y_pred [[ 0.00532967]
+ [ 1.0085013 ]
+ [ 0.00660634]
+ ...
+ [-0.01275799]
+ [ 0.03044182]
+ [ 0.00813097]]
+y_pred_bool [[0]
+ [1]
+ [0]
+ ...
+ [0]
+ [0]
+ [0]]
+(array([0, 1]), array([109121, 241063]))
+Accuracy for 10 epochos 2048 lstm nodes and 6 timesteps
+              precision    recall  f1-score   support
+
+           0       0.94      0.99      0.97     21824
+           1       1.00      0.97      0.98     48213
+
+    accuracy                           0.98     70037
+   macro avg       0.97      0.98      0.98     70037
+weighted avg       0.98      0.98      0.98     70037
+
+[[21598   226]
+ [ 1266 46947]]
+accuracy: 0.9786969744563588 and total is 2773335785 and length is 70037
+count unique values for y.
+(array([0, 1]), array([ 80412, 165699]))
+(array([0, 1]), array([100515, 207124]))
+246111
+Model: "sequential_16"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_64 (Dense)            (None, 7, 2048)           10240     
+                                                                 
+ lstm_16 (LSTM)              (None, 2048)              33562624  
+                                                                 
+ dense_65 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_66 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_67 (Dense)            (None, 1)                 2049      
+                                                                 
+=================================================================
+Total params: 41,967,617
+Trainable params: 41,967,617
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+3846/3846 - 52s - loss: 0.3034 - 52s/epoch - 14ms/step
+Epoch 2/10
+3846/3846 - 51s - loss: 0.0780 - 51s/epoch - 13ms/step
+Epoch 3/10
+3846/3846 - 51s - loss: 0.0730 - 51s/epoch - 13ms/step
+Epoch 4/10
+3846/3846 - 51s - loss: 0.0696 - 51s/epoch - 13ms/step
+Epoch 5/10
+3846/3846 - 51s - loss: 0.0684 - 51s/epoch - 13ms/step
+Epoch 6/10
+3846/3846 - 51s - loss: 0.0559 - 51s/epoch - 13ms/step
+Epoch 7/10
+3846/3846 - 51s - loss: 0.0443 - 51s/epoch - 13ms/step
+Epoch 8/10
+3846/3846 - 51s - loss: 0.0396 - 51s/epoch - 13ms/step
+Epoch 9/10
+3846/3846 - 51s - loss: 0.0367 - 51s/epoch - 13ms/step
+Epoch 10/10
+3846/3846 - 51s - loss: 0.0342 - 51s/epoch - 13ms/step
+saving model as  model_time_step_7_nodes_2048_yajxdx.h5
+1923/1923 - 7s - 7s/epoch - 4ms/step
+y_pred [[0.97600436]
+ [0.9766433 ]
+ [0.971241  ]
+ ...
+ [0.02040783]
+ [0.02606574]
+ [0.97385526]]
+y_pred_bool [[1]
+ [1]
+ [1]
+ ...
+ [0]
+ [0]
+ [1]]
+(array([0, 1]), array([100515, 207124]))
+Accuracy for 10 epochos 2048 lstm nodes and 7 timesteps
+              precision    recall  f1-score   support
+
+           0       0.92      0.96      0.94     20103
+           1       0.98      0.96      0.97     41425
+
+    accuracy                           0.96     61528
+   macro avg       0.95      0.96      0.96     61528
+weighted avg       0.96      0.96      0.96     61528
+
+[[19281   822]
+ [ 1593 39832]]
+accuracy: 0.9607495774281628 and total is 2103721972 and length is 61528
+count unique values for y.
+(array([0, 1]), array([ 75296, 145370]))
+(array([0, 1]), array([ 94120, 181713]))
+220666
+Model: "sequential_17"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_68 (Dense)            (None, 8, 2048)           10240     
+                                                                 
+ lstm_17 (LSTM)              (None, 2048)              33562624  
+                                                                 
+ dense_69 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_70 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_71 (Dense)            (None, 1)                 2049      
+                                                                 
+=================================================================
+Total params: 41,967,617
+Trainable params: 41,967,617
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+3448/3448 - 52s - loss: 0.1515 - 52s/epoch - 15ms/step
+Epoch 2/10
+3448/3448 - 50s - loss: 0.0711 - 50s/epoch - 15ms/step
+Epoch 3/10
+3448/3448 - 50s - loss: 0.0807 - 50s/epoch - 15ms/step
+Epoch 4/10
+3448/3448 - 50s - loss: 0.0711 - 50s/epoch - 15ms/step
+Epoch 5/10
+3448/3448 - 50s - loss: 0.0706 - 50s/epoch - 15ms/step
+Epoch 6/10
+3448/3448 - 50s - loss: 0.0676 - 50s/epoch - 15ms/step
+Epoch 7/10
+3448/3448 - 50s - loss: 0.0641 - 50s/epoch - 15ms/step
+Epoch 8/10
+3448/3448 - 50s - loss: 0.0593 - 50s/epoch - 15ms/step
+Epoch 9/10
+3448/3448 - 50s - loss: 0.0551 - 50s/epoch - 15ms/step
+Epoch 10/10
+3448/3448 - 50s - loss: 0.0473 - 50s/epoch - 15ms/step
+saving model as  model_time_step_8_nodes_2048_mmouty.h5
+1724/1724 - 7s - 7s/epoch - 4ms/step
+y_pred [[0.9903395 ]
+ [0.988184  ]
+ [0.97711694]
+ ...
+ [1.0053918 ]
+ [0.08119813]
+ [1.0066242 ]]
+y_pred_bool [[1]
+ [1]
+ [1]
+ ...
+ [1]
+ [0]
+ [1]]
+(array([0, 1]), array([ 94120, 181713]))
+Accuracy for 10 epochos 2048 lstm nodes and 8 timesteps
+              precision    recall  f1-score   support
+
+           0       0.83      0.97      0.89     18824
+           1       0.98      0.90      0.94     36343
+
+    accuracy                           0.92     55167
+   macro avg       0.91      0.93      0.92     55167
+weighted avg       0.93      0.92      0.92     55167
+
+[[18218   606]
+ [ 3721 32622]]
+accuracy: 0.9215654286076821 and total is 1620584940 and length is 55167
+count unique values for y.
+(array([0, 1]), array([ 71237, 129513]))
+(array([0, 1]), array([ 89047, 161891]))
+200750
+Model: "sequential_18"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_72 (Dense)            (None, 9, 2048)           10240     
+                                                                 
+ lstm_18 (LSTM)              (None, 2048)              33562624  
+                                                                 
+ dense_73 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_74 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_75 (Dense)            (None, 1)                 2049      
+                                                                 
+=================================================================
+Total params: 41,967,617
+Trainable params: 41,967,617
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+3137/3137 - 51s - loss: 0.1860 - 51s/epoch - 16ms/step
+Epoch 2/10
+3137/3137 - 49s - loss: 0.0639 - 49s/epoch - 16ms/step
+Epoch 3/10
+3137/3137 - 49s - loss: 0.0724 - 49s/epoch - 16ms/step
+Epoch 4/10
+3137/3137 - 49s - loss: 0.0702 - 49s/epoch - 16ms/step
+Epoch 5/10
+3137/3137 - 49s - loss: 0.0680 - 49s/epoch - 16ms/step
+Epoch 6/10
+3137/3137 - 49s - loss: 0.0635 - 49s/epoch - 16ms/step
+Epoch 7/10
+3137/3137 - 49s - loss: 0.0571 - 49s/epoch - 16ms/step
+Epoch 8/10
+3137/3137 - 49s - loss: 0.0518 - 49s/epoch - 16ms/step
+Epoch 9/10
+3137/3137 - 49s - loss: 0.0414 - 49s/epoch - 16ms/step
+Epoch 10/10
+3137/3137 - 49s - loss: 0.0309 - 49s/epoch - 16ms/step
+saving model as  model_time_step_9_nodes_2048_epewni.h5
+1569/1569 - 7s - 7s/epoch - 4ms/step
+y_pred [[-0.01185504]
+ [ 0.9769645 ]
+ [ 0.98307633]
+ ...
+ [ 0.98230624]
+ [-0.03746793]
+ [ 0.9795352 ]]
+y_pred_bool [[0]
+ [1]
+ [1]
+ ...
+ [1]
+ [0]
+ [1]]
+(array([0, 1]), array([ 89047, 161891]))
+Accuracy for 10 epochos 2048 lstm nodes and 9 timesteps
+              precision    recall  f1-score   support
+
+           0       0.90      0.92      0.91     17810
+           1       0.96      0.95      0.95     32378
+
+    accuracy                           0.94     50188
+   macro avg       0.93      0.93      0.93     50188
+weighted avg       0.94      0.94      0.94     50188
+
+[[16406  1404]
+ [ 1745 30633]]
+accuracy: 0.9372559177492628 and total is 1360563296 and length is 50188
+count unique values for y.
+(array([0, 1]), array([ 68090, 116845]))
+(array([0, 1]), array([ 85112, 146057]))
+184935
+Model: "sequential_19"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_76 (Dense)            (None, 10, 2048)          10240     
+                                                                 
+ lstm_19 (LSTM)              (None, 2048)              33562624  
+                                                                 
+ dense_77 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_78 (Dense)            (None, 2048)              4196352   
+                                                                 
+ dense_79 (Dense)            (None, 1)                 2049      
+                                                                 
+=================================================================
+Total params: 41,967,617
+Trainable params: 41,967,617
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+2890/2890 - 49s - loss: 0.2574 - 49s/epoch - 17ms/step
+Epoch 2/10
+2890/2890 - 47s - loss: 0.0656 - 47s/epoch - 16ms/step
+Epoch 3/10
+2890/2890 - 47s - loss: 0.0637 - 47s/epoch - 16ms/step
+Epoch 4/10
+2890/2890 - 47s - loss: 0.0589 - 47s/epoch - 16ms/step
+Epoch 5/10
+2890/2890 - 47s - loss: 0.0628 - 47s/epoch - 16ms/step
+Epoch 6/10
+2890/2890 - 47s - loss: 0.0583 - 47s/epoch - 16ms/step
+Epoch 7/10
+2890/2890 - 47s - loss: 0.0490 - 47s/epoch - 16ms/step
+Epoch 8/10
+2890/2890 - 47s - loss: 0.0379 - 47s/epoch - 16ms/step
+Epoch 9/10
+2890/2890 - 47s - loss: 0.0301 - 47s/epoch - 16ms/step
+Epoch 10/10
+2890/2890 - 47s - loss: 0.0268 - 47s/epoch - 16ms/step
+saving model as  model_time_step_10_nodes_2048_isrojx.h5
+1445/1445 - 6s - 6s/epoch - 4ms/step
+y_pred [[0.10986263]
+ [1.0134757 ]
+ [0.06702784]
+ ...
+ [0.9848916 ]
+ [1.0125344 ]
+ [1.0110253 ]]
+y_pred_bool [[0]
+ [1]
+ [0]
+ ...
+ [1]
+ [1]
+ [1]]
+(array([0, 1]), array([ 85112, 146057]))
+Accuracy for 10 epochos 2048 lstm nodes and 10 timesteps
+              precision    recall  f1-score   support
+
+           0       0.90      0.98      0.94     17022
+           1       0.99      0.94      0.96     29212
+
+    accuracy                           0.95     46234
+   macro avg       0.95      0.96      0.95     46234
+weighted avg       0.96      0.95      0.95     46234
+
+[[16678   344]
+ [ 1779 27433]]
+accuracy: 0.9540814119479171 and total is 1125596778 and length is 46234
+count unique values for y.
+(array([0, 1]), array([ 327865, 1142874]))
+(array([0, 1]), array([ 409831, 1428593]))
+1470739
+Model: "sequential_20"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_80 (Dense)            (None, 1, 4096)           20480     
+                                                                 
+ lstm_20 (LSTM)              (None, 4096)              134234112 
+                                                                 
+ dense_81 (Dense)            (None, 4096)              16781312  
+                                                                 
+ dense_82 (Dense)            (None, 4096)              16781312  
+                                                                 
+ dense_83 (Dense)            (None, 1)                 4097      
+                                                                 
+=================================================================
+Total params: 167,821,313
+Trainable params: 167,821,313
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+22981/22981 - 504s - loss: 0.2697 - 504s/epoch - 22ms/step
+Epoch 2/10
+22981/22981 - 501s - loss: 0.0723 - 501s/epoch - 22ms/step
+Epoch 3/10
+22981/22981 - 501s - loss: 0.0676 - 501s/epoch - 22ms/step
+Epoch 4/10
+22981/22981 - 501s - loss: 0.0651 - 501s/epoch - 22ms/step
+Epoch 5/10
+22981/22981 - 501s - loss: 0.0639 - 501s/epoch - 22ms/step
+Epoch 6/10
+22981/22981 - 501s - loss: 0.0625 - 501s/epoch - 22ms/step
+Epoch 7/10
+22981/22981 - 501s - loss: 0.0624 - 501s/epoch - 22ms/step
+Epoch 8/10
+22981/22981 - 501s - loss: 0.0617 - 501s/epoch - 22ms/step
+Epoch 9/10
+22981/22981 - 501s - loss: 0.0610 - 501s/epoch - 22ms/step
+Epoch 10/10
+22981/22981 - 501s - loss: 0.0603 - 501s/epoch - 22ms/step
+saving model as  model_time_step_1_nodes_4096_yniqzi.h5
+11491/11491 - 74s - 74s/epoch - 6ms/step
+y_pred [[0.9031207 ]
+ [0.93157125]
+ [0.9926644 ]
+ ...
+ [0.98157334]
+ [0.9988399 ]
+ [0.9669831 ]]
+y_pred_bool [[1]
+ [1]
+ [1]
+ ...
+ [1]
+ [1]
+ [1]]
+(array([0, 1]), array([ 409831, 1428593]))
+Accuracy for 10 epochos 4096 lstm nodes and 1 timesteps
+              precision    recall  f1-score   support
+
+           0       0.70      0.92      0.79     81966
+           1       0.97      0.89      0.93    285719
+
+    accuracy                           0.89    367685
+   macro avg       0.84      0.90      0.86    367685
+weighted avg       0.91      0.89      0.90    367685
+
+[[ 75323   6643]
+ [ 32440 253279]]
+accuracy: 0.893705209622367 and total is 83097555976 and length is 367685
+count unique values for y.
+(array([0, 1]), array([183633, 572890]))
+(array([0, 1]), array([229541, 716113]))
+756523
+Model: "sequential_21"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_84 (Dense)            (None, 2, 4096)           20480     
+                                                                 
+ lstm_21 (LSTM)              (None, 4096)              134234112 
+                                                                 
+ dense_85 (Dense)            (None, 4096)              16781312  
+                                                                 
+ dense_86 (Dense)            (None, 4096)              16781312  
+                                                                 
+ dense_87 (Dense)            (None, 1)                 4097      
+                                                                 
+=================================================================
+Total params: 167,821,313
+Trainable params: 167,821,313
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+11821/11821 - 318s - loss: 1.0495 - 318s/epoch - 27ms/step
+Epoch 2/10
+11821/11821 - 317s - loss: 0.1061 - 317s/epoch - 27ms/step
+Epoch 3/10
+11821/11821 - 318s - loss: 0.0633 - 318s/epoch - 27ms/step
+Epoch 4/10
+11821/11821 - 318s - loss: 0.0536 - 318s/epoch - 27ms/step
+Epoch 5/10
+11821/11821 - 317s - loss: 0.0484 - 317s/epoch - 27ms/step
+Epoch 6/10
+11821/11821 - 317s - loss: 0.0443 - 317s/epoch - 27ms/step
+Epoch 7/10
+11821/11821 - 317s - loss: 0.0413 - 317s/epoch - 27ms/step
+Epoch 8/10
+11821/11821 - 317s - loss: 0.0420 - 317s/epoch - 27ms/step
+Epoch 9/10
+11821/11821 - 317s - loss: 0.0415 - 317s/epoch - 27ms/step
+Epoch 10/10
+11821/11821 - 317s - loss: 0.0389 - 317s/epoch - 27ms/step
+saving model as  model_time_step_2_nodes_4096_wlnrud.h5
+5911/5911 - 44s - 44s/epoch - 7ms/step
+y_pred [[0.9910818 ]
+ [0.961431  ]
+ [0.99164855]
+ ...
+ [0.04913312]
+ [0.99220145]
+ [0.9834176 ]]
+y_pred_bool [[1]
+ [1]
+ [1]
+ ...
+ [0]
+ [1]
+ [1]]
+(array([0, 1]), array([229541, 716113]))
+Accuracy for 10 epochos 4096 lstm nodes and 2 timesteps
+              precision    recall  f1-score   support
+
+           0       0.82      0.97      0.88     45908
+           1       0.99      0.93      0.96    143223
+
+    accuracy                           0.94    189131
+   macro avg       0.90      0.95      0.92    189131
+weighted avg       0.95      0.94      0.94    189131
+
+[[ 44316   1592]
+ [  9939 133284]]
+accuracy: 0.9390316764570589 and total is 21808083888 and length is 189131
+count unique values for y.
+(array([0, 1]), array([135376, 382848]))
+(array([0, 1]), array([169220, 478561]))
+518224
+Model: "sequential_22"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_88 (Dense)            (None, 3, 4096)           20480     
+                                                                 
+ lstm_22 (LSTM)              (None, 4096)              134234112 
+                                                                 
+ dense_89 (Dense)            (None, 4096)              16781312  
+                                                                 
+ dense_90 (Dense)            (None, 4096)              16781312  
+                                                                 
+ dense_91 (Dense)            (None, 1)                 4097      
+                                                                 
+=================================================================
+Total params: 167,821,313
+Trainable params: 167,821,313
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+8098/8098 - 258s - loss: 1.0121 - 258s/epoch - 32ms/step
+Epoch 2/10
+8098/8098 - 256s - loss: 0.1050 - 256s/epoch - 32ms/step
+Epoch 3/10
+8098/8098 - 256s - loss: 0.0490 - 256s/epoch - 32ms/step
+Epoch 4/10
+8098/8098 - 257s - loss: 0.0403 - 257s/epoch - 32ms/step
+Epoch 5/10
+8098/8098 - 258s - loss: 0.0368 - 258s/epoch - 32ms/step
+Epoch 6/10
+8098/8098 - 258s - loss: 0.0359 - 258s/epoch - 32ms/step
+Epoch 7/10
+8098/8098 - 257s - loss: 0.0347 - 257s/epoch - 32ms/step
+Epoch 8/10
+8098/8098 - 257s - loss: 0.0325 - 257s/epoch - 32ms/step
+Epoch 9/10
+8098/8098 - 257s - loss: 0.0312 - 257s/epoch - 32ms/step
+Epoch 10/10
+8098/8098 - 258s - loss: 0.0299 - 258s/epoch - 32ms/step
+saving model as  model_time_step_3_nodes_4096_cggxfd.h5
+4049/4049 - 33s - 33s/epoch - 8ms/step
+y_pred [[0.9876218 ]
+ [0.99276507]
+ [0.98718935]
+ ...
+ [0.8195667 ]
+ [0.98954046]
+ [0.9909154 ]]
+y_pred_bool [[1]
+ [1]
+ [1]
+ ...
+ [0]
+ [1]
+ [1]]
+(array([0, 1]), array([169220, 478561]))
+Accuracy for 10 epochos 4096 lstm nodes and 3 timesteps
+              precision    recall  f1-score   support
+
+           0       0.88      0.97      0.92     33844
+           1       0.99      0.96      0.97     95713
+
+    accuracy                           0.96    129557
+   macro avg       0.94      0.96      0.95    129557
+weighted avg       0.96      0.96      0.96    129557
+
+[[32703  1141]
+ [ 4264 91449]]
+accuracy: 0.9582809111047647 and total is 10113177818 and length is 129557
+count unique values for y.
+(array([0, 1]), array([111426, 287881]))
+(array([0, 1]), array([139283, 359851]))
+399307
+Model: "sequential_23"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_92 (Dense)            (None, 4, 4096)           20480     
+                                                                 
+ lstm_23 (LSTM)              (None, 4096)              134234112 
+                                                                 
+ dense_93 (Dense)            (None, 4096)              16781312  
+                                                                 
+ dense_94 (Dense)            (None, 4096)              16781312  
+                                                                 
+ dense_95 (Dense)            (None, 1)                 4097      
+                                                                 
+=================================================================
+Total params: 167,821,313
+Trainable params: 167,821,313
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+6240/6240 - 222s - loss: 2.1116 - 222s/epoch - 36ms/step
+Epoch 2/10
+6240/6240 - 221s - loss: 0.1003 - 221s/epoch - 35ms/step
+Epoch 3/10
+6240/6240 - 220s - loss: 0.0962 - 220s/epoch - 35ms/step
+Epoch 4/10
+6240/6240 - 220s - loss: 0.0644 - 220s/epoch - 35ms/step
+Epoch 5/10
+6240/6240 - 220s - loss: 0.0441 - 220s/epoch - 35ms/step
+Epoch 6/10
+6240/6240 - 220s - loss: 0.0403 - 220s/epoch - 35ms/step
+Epoch 7/10
+6240/6240 - 221s - loss: 0.0399 - 221s/epoch - 35ms/step
+Epoch 8/10
+6240/6240 - 221s - loss: 0.0386 - 221s/epoch - 35ms/step
+Epoch 9/10
+6240/6240 - 221s - loss: 0.0362 - 221s/epoch - 35ms/step
+Epoch 10/10
+6240/6240 - 222s - loss: 0.0346 - 222s/epoch - 36ms/step
+saving model as  model_time_step_4_nodes_4096_nffaws.h5
+3120/3120 - 28s - 28s/epoch - 9ms/step
+y_pred [[ 0.06170374]
+ [-0.02516425]
+ [ 0.9848161 ]
+ ...
+ [ 0.9861429 ]
+ [ 0.3253435 ]
+ [ 0.98403144]]
+y_pred_bool [[0]
+ [0]
+ [1]
+ ...
+ [1]
+ [0]
+ [1]]
+(array([0, 1]), array([139283, 359851]))
+Accuracy for 10 epochos 4096 lstm nodes and 4 timesteps
+              precision    recall  f1-score   support
+
+           0       0.82      0.99      0.90     27857
+           1       1.00      0.92      0.95     71970
+
+    accuracy                           0.94     99827
+   macro avg       0.91      0.95      0.92     99827
+weighted avg       0.95      0.94      0.94     99827
+
+[[27542   315]
+ [ 6099 65871]]
+accuracy: 0.9357488455027198 and total is 5700543757 and length is 99827
+count unique values for y.
+(array([0, 1]), array([ 96946, 230849]))
+(array([0, 1]), array([121183, 288561]))
+327795
+Model: "sequential_24"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_96 (Dense)            (None, 5, 4096)           20480     
+                                                                 
+ lstm_24 (LSTM)              (None, 4096)              134234112 
+                                                                 
+ dense_97 (Dense)            (None, 4096)              16781312  
+                                                                 
+ dense_98 (Dense)            (None, 4096)              16781312  
+                                                                 
+ dense_99 (Dense)            (None, 1)                 4097      
+                                                                 
+=================================================================
+Total params: 167,821,313
+Trainable params: 167,821,313
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+5122/5122 - 202s - loss: 2.3106 - 202s/epoch - 39ms/step
+Epoch 2/10
+5122/5122 - 201s - loss: 0.0864 - 201s/epoch - 39ms/step
+Epoch 3/10
+5122/5122 - 200s - loss: 0.0896 - 200s/epoch - 39ms/step
+Epoch 4/10
+5122/5122 - 200s - loss: 0.0858 - 200s/epoch - 39ms/step
+Epoch 5/10
+5122/5122 - 200s - loss: 0.0900 - 200s/epoch - 39ms/step
+Epoch 6/10
+5122/5122 - 200s - loss: 0.0702 - 200s/epoch - 39ms/step
+Epoch 7/10
+5122/5122 - 200s - loss: 0.0413 - 200s/epoch - 39ms/step
+Epoch 8/10
+5122/5122 - 200s - loss: 0.0363 - 200s/epoch - 39ms/step
+Epoch 9/10
+5122/5122 - 201s - loss: 0.0362 - 201s/epoch - 39ms/step
+Epoch 10/10
+5122/5122 - 201s - loss: 0.0340 - 201s/epoch - 39ms/step
+saving model as  model_time_step_5_nodes_4096_juqmme.h5
+2561/2561 - 25s - 25s/epoch - 10ms/step
+y_pred [[0.66734684]
+ [1.0414708 ]
+ [0.92115974]
+ ...
+ [1.037624  ]
+ [0.08692035]
+ [1.0159501 ]]
+y_pred_bool [[0]
+ [1]
+ [1]
+ ...
+ [1]
+ [0]
+ [1]]
+(array([0, 1]), array([121183, 288561]))
+Accuracy for 10 epochos 4096 lstm nodes and 5 timesteps
+              precision    recall  f1-score   support
+
+           0       0.84      0.98      0.91     24237
+           1       0.99      0.92      0.96     57712
+
+    accuracy                           0.94     81949
+   macro avg       0.92      0.95      0.93     81949
+weighted avg       0.95      0.94      0.94     81949
+
+[[23785   452]
+ [ 4529 53183]]
+accuracy: 0.9392182943049946 and total is 3781629538 and length is 81949
+count unique values for y.
+(array([0, 1]), array([ 87297, 192850]))
+(array([0, 1]), array([109121, 241063]))
+280147
+Model: "sequential_25"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_100 (Dense)           (None, 6, 4096)           20480     
+                                                                 
+ lstm_25 (LSTM)              (None, 4096)              134234112 
+                                                                 
+ dense_101 (Dense)           (None, 4096)              16781312  
+                                                                 
+ dense_102 (Dense)           (None, 4096)              16781312  
+                                                                 
+ dense_103 (Dense)           (None, 1)                 4097      
+                                                                 
+=================================================================
+Total params: 167,821,313
+Trainable params: 167,821,313
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+4378/4378 - 193s - loss: 2.2865 - 193s/epoch - 44ms/step
+Epoch 2/10
+4378/4378 - 191s - loss: 0.1033 - 191s/epoch - 44ms/step
+Epoch 3/10
+4378/4378 - 190s - loss: 0.0985 - 190s/epoch - 43ms/step
+Epoch 4/10
+4378/4378 - 190s - loss: 0.0974 - 190s/epoch - 43ms/step
+Epoch 5/10
+4378/4378 - 190s - loss: 0.0921 - 190s/epoch - 43ms/step
+Epoch 6/10
+4378/4378 - 190s - loss: 0.0884 - 190s/epoch - 43ms/step
+Epoch 7/10
+4378/4378 - 190s - loss: 0.0788 - 190s/epoch - 43ms/step
+Epoch 8/10
+4378/4378 - 190s - loss: 0.0798 - 190s/epoch - 43ms/step
+Epoch 9/10
+4378/4378 - 190s - loss: 0.0804 - 190s/epoch - 43ms/step
+Epoch 10/10
+4378/4378 - 190s - loss: 0.0766 - 190s/epoch - 43ms/step
+saving model as  model_time_step_6_nodes_4096_csfedf.h5
+2189/2189 - 23s - 23s/epoch - 11ms/step
+y_pred [[ 0.02084246]
+ [ 0.9530208 ]
+ [ 0.08114351]
+ ...
+ [ 0.0153968 ]
+ [-0.01474214]
+ [ 0.08114351]]
+y_pred_bool [[0]
+ [1]
+ [0]
+ ...
+ [0]
+ [0]
+ [0]]
+(array([0, 1]), array([109121, 241063]))
+Accuracy for 10 epochos 4096 lstm nodes and 6 timesteps
+              precision    recall  f1-score   support
+
+           0       0.67      0.96      0.79     21824
+           1       0.98      0.78      0.87     48213
+
+    accuracy                           0.84     70037
+   macro avg       0.82      0.87      0.83     70037
+weighted avg       0.88      0.84      0.84     70037
+
+[[20887   937]
+ [10500 37713]]
+accuracy: 0.8367006011108414 and total is 2548422338 and length is 70037
+count unique values for y.
+(array([0, 1]), array([ 80412, 165699]))
+(array([0, 1]), array([100515, 207124]))
+246111
+Model: "sequential_26"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_104 (Dense)           (None, 7, 4096)           20480     
+                                                                 
+ lstm_26 (LSTM)              (None, 4096)              134234112 
+                                                                 
+ dense_105 (Dense)           (None, 4096)              16781312  
+                                                                 
+ dense_106 (Dense)           (None, 4096)              16781312  
+                                                                 
+ dense_107 (Dense)           (None, 1)                 4097      
+                                                                 
+=================================================================
+Total params: 167,821,313
+Trainable params: 167,821,313
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+3846/3846 - 189s - loss: 2.1128 - 189s/epoch - 49ms/step
+Epoch 2/10
+3846/3846 - 187s - loss: 0.0815 - 187s/epoch - 49ms/step
+Epoch 3/10
+3846/3846 - 187s - loss: 0.0740 - 187s/epoch - 49ms/step
+Epoch 4/10
+3846/3846 - 187s - loss: 0.0743 - 187s/epoch - 49ms/step
+Epoch 5/10
+3846/3846 - 187s - loss: 0.0701 - 187s/epoch - 49ms/step
+Epoch 6/10
+3846/3846 - 187s - loss: 0.0714 - 187s/epoch - 49ms/step
+Epoch 7/10
+3846/3846 - 187s - loss: 0.0710 - 187s/epoch - 49ms/step
+Epoch 8/10
+3846/3846 - 186s - loss: 0.0710 - 186s/epoch - 48ms/step
+Epoch 9/10
+3846/3846 - 186s - loss: 0.0732 - 186s/epoch - 48ms/step
+Epoch 10/10
+3846/3846 - 186s - loss: 0.0750 - 186s/epoch - 48ms/step
+saving model as  model_time_step_7_nodes_4096_nhcxno.h5
+1923/1923 - 22s - 22s/epoch - 12ms/step
+y_pred [[0.99159217]
+ [0.99159217]
+ [0.99159217]
+ ...
+ [0.04244024]
+ [0.04244024]
+ [0.99159217]]
+y_pred_bool [[1]
+ [1]
+ [1]
+ ...
+ [0]
+ [0]
+ [1]]
+(array([0, 1]), array([100515, 207124]))
+Accuracy for 10 epochos 4096 lstm nodes and 7 timesteps
+              precision    recall  f1-score   support
+
+           0       0.78      0.91      0.84     20103
+           1       0.95      0.88      0.91     41425
+
+    accuracy                           0.89     61528
+   macro avg       0.87      0.89      0.88     61528
+weighted avg       0.90      0.89      0.89     61528
+
+[[18274  1829]
+ [ 5079 36346]]
+accuracy: 0.8877259134052788 and total is 2050864734 and length is 61528
+count unique values for y.
+(array([0, 1]), array([ 75296, 145370]))
+(array([0, 1]), array([ 94120, 181713]))
+220666
+Model: "sequential_27"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_108 (Dense)           (None, 8, 4096)           20480     
+                                                                 
+ lstm_27 (LSTM)              (None, 4096)              134234112 
+                                                                 
+ dense_109 (Dense)           (None, 4096)              16781312  
+                                                                 
+ dense_110 (Dense)           (None, 4096)              16781312  
+                                                                 
+ dense_111 (Dense)           (None, 1)                 4097      
+                                                                 
+=================================================================
+Total params: 167,821,313
+Trainable params: 167,821,313
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+3448/3448 - 180s - loss: 2.6777 - 180s/epoch - 52ms/step
+Epoch 2/10
+3448/3448 - 179s - loss: 0.0953 - 179s/epoch - 52ms/step
+Epoch 3/10
+3448/3448 - 178s - loss: 0.0968 - 178s/epoch - 52ms/step
+Epoch 4/10
+3448/3448 - 178s - loss: 0.0975 - 178s/epoch - 52ms/step
+Epoch 5/10
+3448/3448 - 178s - loss: 0.0899 - 178s/epoch - 52ms/step
+Epoch 6/10
+3448/3448 - 179s - loss: 0.0729 - 179s/epoch - 52ms/step
+Epoch 7/10
+3448/3448 - 179s - loss: 0.0669 - 179s/epoch - 52ms/step
+Epoch 8/10
+3448/3448 - 179s - loss: 0.0567 - 179s/epoch - 52ms/step
+Epoch 9/10
+3448/3448 - 179s - loss: 0.0524 - 179s/epoch - 52ms/step
+Epoch 10/10
+3448/3448 - 179s - loss: 0.0428 - 179s/epoch - 52ms/step
+saving model as  model_time_step_8_nodes_4096_ovhixs.h5
+1724/1724 - 21s - 21s/epoch - 12ms/step
+y_pred [[0.9871334 ]
+ [0.9949868 ]
+ [0.97976756]
+ ...
+ [1.0048659 ]
+ [0.02933419]
+ [0.9958203 ]]
+y_pred_bool [[1]
+ [1]
+ [1]
+ ...
+ [1]
+ [0]
+ [1]]
+(array([0, 1]), array([ 94120, 181713]))
+Accuracy for 10 epochos 4096 lstm nodes and 8 timesteps
+              precision    recall  f1-score   support
+
+           0       0.85      0.99      0.92     18824
+           1       0.99      0.91      0.95     36343
+
+    accuracy                           0.94     55167
+   macro avg       0.92      0.95      0.93     55167
+weighted avg       0.95      0.94      0.94     55167
+
+[[18584   240]
+ [ 3167 33176]]
+accuracy: 0.9382420650026284 and total is 1623878512 and length is 55167
+count unique values for y.
+(array([0, 1]), array([ 71237, 129513]))
+(array([0, 1]), array([ 89047, 161891]))
+200750
+Model: "sequential_28"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_112 (Dense)           (None, 9, 4096)           20480     
+                                                                 
+ lstm_28 (LSTM)              (None, 4096)              134234112 
+                                                                 
+ dense_113 (Dense)           (None, 4096)              16781312  
+                                                                 
+ dense_114 (Dense)           (None, 4096)              16781312  
+                                                                 
+ dense_115 (Dense)           (None, 1)                 4097      
+                                                                 
+=================================================================
+Total params: 167,821,313
+Trainable params: 167,821,313
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+3137/3137 - 179s - loss: 2.7889 - 179s/epoch - 57ms/step
+Epoch 2/10
+3137/3137 - 177s - loss: 0.0909 - 177s/epoch - 56ms/step
+Epoch 3/10
+3137/3137 - 176s - loss: 0.0929 - 176s/epoch - 56ms/step
+Epoch 4/10
+3137/3137 - 176s - loss: 0.0943 - 176s/epoch - 56ms/step
+Epoch 5/10
+3137/3137 - 176s - loss: 0.0935 - 176s/epoch - 56ms/step
+Epoch 6/10
+3137/3137 - 177s - loss: 0.0705 - 177s/epoch - 56ms/step
+Epoch 7/10
+3137/3137 - 177s - loss: 0.0683 - 177s/epoch - 56ms/step
+Epoch 8/10
+3137/3137 - 178s - loss: 0.0615 - 178s/epoch - 57ms/step
+Epoch 9/10
+3137/3137 - 178s - loss: 0.0548 - 178s/epoch - 57ms/step
+Epoch 10/10
+3137/3137 - 177s - loss: 0.0527 - 177s/epoch - 57ms/step
+saving model as  model_time_step_9_nodes_4096_ucxpkf.h5
+1569/1569 - 21s - 21s/epoch - 13ms/step
+y_pred [[0.02851743]
+ [0.9758934 ]
+ [0.97589445]
+ ...
+ [0.9758935 ]
+ [0.0938011 ]
+ [0.9735551 ]]
+y_pred_bool [[0]
+ [1]
+ [1]
+ ...
+ [1]
+ [0]
+ [1]]
+(array([0, 1]), array([ 89047, 161891]))
+Accuracy for 10 epochos 4096 lstm nodes and 9 timesteps
+              precision    recall  f1-score   support
+
+           0       0.91      0.88      0.89     17810
+           1       0.93      0.95      0.94     32378
+
+    accuracy                           0.93     50188
+   macro avg       0.92      0.92      0.92     50188
+weighted avg       0.93      0.93      0.93     50188
+
+[[15644  2166]
+ [ 1541 30837]]
+accuracy: 0.9261377221646608 and total is 1374635984 and length is 50188
+count unique values for y.
+(array([0, 1]), array([ 68090, 116845]))
+(array([0, 1]), array([ 85112, 146057]))
+184935
+Model: "sequential_29"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_116 (Dense)           (None, 10, 4096)          20480     
+                                                                 
+ lstm_29 (LSTM)              (None, 4096)              134234112 
+                                                                 
+ dense_117 (Dense)           (None, 4096)              16781312  
+                                                                 
+ dense_118 (Dense)           (None, 4096)              16781312  
+                                                                 
+ dense_119 (Dense)           (None, 1)                 4097      
+                                                                 
+=================================================================
+Total params: 167,821,313
+Trainable params: 167,821,313
+Non-trainable params: 0
+_________________________________________________________________
+None
+training
+Epoch 1/10
+2890/2890 - 176s - loss: 3.8606 - 176s/epoch - 61ms/step
+Epoch 2/10
+2890/2890 - 174s - loss: 0.0851 - 174s/epoch - 60ms/step
+Epoch 3/10
+2890/2890 - 173s - loss: 0.0836 - 173s/epoch - 60ms/step
+Epoch 4/10
+2890/2890 - 172s - loss: 0.0778 - 172s/epoch - 60ms/step
+Epoch 5/10
+2890/2890 - 172s - loss: 0.0773 - 172s/epoch - 59ms/step
+Epoch 6/10
+2890/2890 - 171s - loss: 0.0783 - 171s/epoch - 59ms/step
+Epoch 7/10
+2890/2890 - 172s - loss: 0.0775 - 172s/epoch - 59ms/step
+Epoch 8/10
+2890/2890 - 171s - loss: 0.0770 - 171s/epoch - 59ms/step
+Epoch 9/10
+2890/2890 - 171s - loss: 0.0786 - 171s/epoch - 59ms/step
+Epoch 10/10
+2890/2890 - 171s - loss: 0.0807 - 171s/epoch - 59ms/step
+saving model as  model_time_step_10_nodes_4096_qzdijm.h5
+1445/1445 - 20s - 20s/epoch - 14ms/step
+y_pred [[0.09225634]
+ [0.9225912 ]
+ [0.24945134]
+ ...
+ [0.92257005]
+ [0.92257005]
+ [0.92257005]]
+y_pred_bool [[0]
+ [1]
+ [0]
+ ...
+ [1]
+ [1]
+ [1]]
+(array([0, 1]), array([ 85112, 146057]))
+Accuracy for 10 epochos 4096 lstm nodes and 10 timesteps
+              precision    recall  f1-score   support
+
+           0       0.92      0.79      0.85     17022
+           1       0.89      0.96      0.92     29212
+
+    accuracy                           0.90     46234
+   macro avg       0.90      0.87      0.89     46234
+weighted avg       0.90      0.90      0.90     46234
+
+[[13373  3649]
+ [ 1098 28114]]
+accuracy: 0.8973266427304581 and total is 1174186118 and length is 46234
+all_accuracies [[0.8861144729863878, 0.9384923677239585, 0.9736332270737976, 0.9777715447724563, 0.968968504801767, 0.9654325570769736, 0.9738167988558055, 0.9614987220621023, 0.9703315533593688, 0.9711900333088204], [0.8941294858370616, 0.9530431288366265, 0.9498521886119623, 0.9467779258116542, 0.976631807587646, 0.9786969744563588, 0.9607495774281628, 0.9215654286076821, 0.9372559177492628, 0.9540814119479171], [0.893705209622367, 0.9390316764570589, 0.9582809111047647, 0.9357488455027198, 0.9392182943049946, 0.8367006011108414, 0.8877259134052788, 0.9382420650026284, 0.9261377221646608, 0.8973266427304581]]
+After python lines of file: lstmV2.py
+Wed Jan 17 02:58:53 CST 2024

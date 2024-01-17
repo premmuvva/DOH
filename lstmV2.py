@@ -95,6 +95,16 @@ output_path = f"output/lstm_{generate_random_string(4)}"
 print("Creating directory", output_path) 
 os.makedirs(output_path)
 
+def compute_accuracy(Y_true, Y_pred):  
+    correctly_predicted = 0  
+    # iterating over every label and checking it with the true sample  
+    for true_label, predicted in zip(Y_true, Y_pred):  
+        if true_label == predicted:  
+            correctly_predicted += 1  
+    # computing the accuracy score  
+    accuracy_score = correctly_predicted / len(Y_true)  
+    return accuracy_score  
+
 def model(data_df, timestep, number_of_lstm_nodes):
     X, y = Sequential_Input_LSTM(data_df, timestep)
     X[np.isnan(X)] = 0
@@ -132,8 +142,10 @@ def model(data_df, timestep, number_of_lstm_nodes):
     
     pred_0 = [x for y,x in sorted(zip(y_test, y_pred)) if y == 0]
     pred_1 = [x for y,x in sorted(zip(y_test, y_pred)) if y == 1]
-    plt.plot(plot_x[:len(pred_0)], pred_0, color="blue")
-    plt.plot(plot_x[len(pred_0):], pred_1, color="red")
+    plt.plot(plot_x[:len(pred_0)], pred_0, color="blue", label='Benign')
+    plt.plot(plot_x[len(pred_0):], pred_1, color="red", label='Malicious')
+    plt.xlabel('count')
+    plt.ylabel('Y_test_predict')
     plt.savefig(f"{output_path}/lstm_10_epoch_{timestep}_nodes_{number_of_lstm_nodes}.png")
     # plt.plot(plot_x, y_test, color="blue")
     # plt.savefig("plotFinalResults1.png")
@@ -142,7 +154,7 @@ def model(data_df, timestep, number_of_lstm_nodes):
     print("y_pred", y_pred)
 
     # y_pred_bool = np.argmax(y_pred, axis=1)
-    y_pred_bool = np.where(y_pred > 0.8, 1, 0)
+    y_pred_bool = np.where(y_pred > 0.85, 1, 0)
     
     print("y_pred_bool", y_pred_bool)
     print(np.unique(y, return_counts=True))
@@ -150,12 +162,13 @@ def model(data_df, timestep, number_of_lstm_nodes):
     print(f"Accuracy for 10 epochos {number_of_lstm_nodes} lstm nodes and {timestep} timesteps")
     print(classification_report(y_test, y_pred_bool))
     print(confusion_matrix(y_test, y_pred_bool))
-    accuracy = np.sum(y_test == y_pred_bool) / len(y_test)
+    accuracy = compute_accuracy(y_test, y_pred_bool)
+    
     print(f"accuracy: {accuracy} and total is {np.sum(y_test == y_pred_bool)} and length is {len(y_test)}")
     return accuracy
     
 all_accuracies = []
-for lstm_nodes in [1024, 2048, 4096, 8192]:
+for lstm_nodes in [1024, 2048, 4096]:
     accuracies = []
     for timestep in range(1,11):
         accu = model(df, timestep=timestep, number_of_lstm_nodes=lstm_nodes)
