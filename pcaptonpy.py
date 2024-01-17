@@ -99,8 +99,6 @@ def get_process_params(dir_path, output_path):
     sorted_file_names = [(file[0], file[2], output_path) for file in file_list]
 
     return sorted_file_names
-
-    # return file_list
     
 
 def run_executor(dir_path, output_path):
@@ -108,12 +106,8 @@ def run_executor(dir_path, output_path):
     df_ar = [i for i in range(len(file_list))]
     print("Total number of file to process:", len(file_list))
     print("file_list[1000]", file_list[20000])
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:    
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:    
         executor.map(process_pcap_wrapper, file_list[::-1])
-    # for files in file_list[30000:]:
-    #     process_pcap_wrapper(files)
-    # for i in file_list:
-    #     process_pcap_wrapper(i)
 
 def process(input_dir, output_path):
     globals()['df_ar'] = []

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# File to check for missing files in a directory
 directory_path="output/npy/maliciousv2/"
 
 for ((i = $1; i <= $2; i++)); do

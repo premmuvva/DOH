@@ -27,8 +27,6 @@ def process_pcap_wrapper(args):
                         "-w", output_file_path,
                         "-Y", f"\"tcp.stream=={stream} && tls.app_data\""
                     ]
-                    # os.popen(tshark_command).close()
-                    # Run the command using subprocess and wait for completion
     process = subprocess.run(tshark_command, shell=True)
     return_code = process.returncode
     print("tshark done", return_code)
@@ -49,8 +47,6 @@ for root, dirs, files in os.walk(directory_path):
                 tshark_command = f"~/tshark/usr/local/bin/tshark -r {full_path} -T fields -e tcp.stream | sort -n | uniq"
                 stream_output = os.popen(tshark_command).read()
                 
-                # print(stream_output)
-                # print(stream_output)
                 wrapper_input = [(full_path, i, df) for i in stream_output.split('\n')]
                 # with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:    
                 #     executor.map(process_pcap_wrapper, wrapper_input)
@@ -59,7 +55,3 @@ for root, dirs, files in os.walk(directory_path):
                     process_pcap_wrapper(i)
                 
                 time.sleep(100)
-        
-                # for stream in stream_output.split('\n')[:1]:
-                #     # Your code for processing each stream goes here
-                #     new_func(df, full_path, stream)

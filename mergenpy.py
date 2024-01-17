@@ -12,11 +12,6 @@ def merge_npy_files_in_directory(directory_path, output_path, progress_file):
     if not npy_files:
         print("No .npy files found in the specified directory.")
         return
-    # merged_data = np.load(os.path.join(directory_path, npy_files[0]), allow_pickle=True)
-    
-    # index = pd.MultiIndex.from_product([npy_files[:1],['src', 'dst', 'Number of Packets', 'Direction', 'Size', 'Duration', 'RawTimestamp']])
-    
-    # df = pd.DataFrame(merged_data, index=index)
     
     if os.path.exists(progress_file):
         with open(progress_file, 'r') as file:
@@ -38,7 +33,6 @@ def merge_npy_files_in_directory(directory_path, output_path, progress_file):
     
     print(f"{len(npy_files)} to be processed", flush=True)
     
-    # store=pd.HDFStore(h5_file)
     
     # Load the merged data from the progress file or start with the first file
     if last_processed_file is None or not os.path.exists(output_path):
@@ -62,7 +56,6 @@ def merge_npy_files_in_directory(directory_path, output_path, progress_file):
             
         df = pd.concat([df, df2], axis=0)
         memory_usage = df.memory_usage(deep=True).sum()
-        # memory_usage += 1
         if total_memory_usage > memory_usage:
             print(f"memory usage decreased: {npy_files.index(npy_file)}: {npy_file}, where previous file is {npy_files[npy_files.index(npy_file) - 1]}")
             return
@@ -71,9 +64,9 @@ def merge_npy_files_in_directory(directory_path, output_path, progress_file):
         gc.collect()
         
         if i%100 == 0:
+            # intermediate save to avoid loss of processed data.
             print(f"merging file : {npy_file} of length {len(df)}")
             df.to_csv(output_path, index=True)
-            # print("saving...")
             with open(progress_file, 'w') as file:
                 file.write(npy_file)
         i+=1

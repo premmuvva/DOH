@@ -22,10 +22,8 @@ def merge_npy_files_in_directory(directory_path, output_path, progress_file):
     # Skip files until the last processed file is encountered
     if last_processed_file is not None:
         print("total", len(npy_files))
-        # print("6000th file name", npy_files[10000])
         npy_files = npy_files[npy_files.index(last_processed_file):]
         print("to be complete", len(npy_files))
-        # return
 
     if not npy_files:
         print("No .npy files found in the specified directory.", flush=True)
@@ -37,27 +35,21 @@ def merge_npy_files_in_directory(directory_path, output_path, progress_file):
     # Load the merged data from the progress file or start with the first file
     if last_processed_file is None or not os.path.exists(output_path):
         merged_data = np.load(os.path.join(directory_path, npy_files[0]), allow_pickle=True)
-        # print(merged_data.T)
         df = pd.DataFrame(merged_data.T, columns=coloumns)
-        # print(df)
 
     else:
         df = pd.read_csv(output_path, index_col=[0, 1], low_memory=False)
-        # df = store.select('df')
-
 
     i = 0
     total_memory_usage = 0
     
     nan_df = pd.DataFrame(np.nan, index=range(20), columns=coloumns)
-    # print("nan_df", nan_df)
     # Iterate over the remaining .npy files and concatenate their data
     for npy_file in npy_files[1:]:
         data = np.load(os.path.join(directory_path, npy_file), allow_pickle=True)
         print(f"processing {npy_file}, current df size: {total_memory_usage}", flush=True)
         
         df2 = pd.DataFrame(data.T, columns=coloumns)
-        # print("df2", df2)
             
         df = pd.concat([df,nan_df, df2], axis=0, ignore_index=True)
         

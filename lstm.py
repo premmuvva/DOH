@@ -16,7 +16,6 @@ import matplotlib.pyplot as plt
 
 np.set_printoptions(threshold=30)
 print("test run count")
-# print(random.randint(0,10000))
 
 def Sequential_Input_LSTM(total_data_df, time_step_size):
     
@@ -73,19 +72,6 @@ fetch_dataset()
 print(df)
 
 
-
-# data_df['Label']= data_df['Label'].astype('int64')
-# data_df['Number of Packets']= data_df['Number of Packets'].astype('int64')
-# data_df['Direction']= data_df['Direction'].astype('int64')
-# data_df['Size']= data_df['Size'].astype('int64')
-# data_df['Duration']= data_df['Duration'].astype('float')
-
-# print(data_df.dtypes)
-# print(data_df.head)
-# print(data_df.shape)
-
-# np.save('output/11/totaldata.npy', data_df)
-
 def generate_random_string(length):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for _ in range(length))
@@ -126,8 +112,6 @@ def model(data_df, timestep, number_of_lstm_nodes):
     z_pred = [x for _,x in sorted(zip(y_test, y_pred))]
     plt.plot(plot_x, z_pred, color="red")
     plt.savefig(f"output/logs/lstm/lstm_10_epoch_{timestep}.png")
-    # plt.plot(plot_x, y_test, color="blue")
-    # plt.savefig("plotFinalResults1.png")
 
     print("y_pred", y_pred)
 
