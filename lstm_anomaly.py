@@ -14,7 +14,9 @@ import random
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import mean_squared_error
 import string
+from datetime import datetime
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 np.set_printoptions(threshold=30)
 print("test run count")
@@ -57,12 +59,6 @@ print(df)
 
 
 
-# data_df['Label']= data_df['Label'].astype('int64')
-# data_df['Number of Packets']= data_df['Number of Packets'].astype('int64')
-# data_df['Direction']= data_df['Direction'].astype('int64')
-# data_df['Size']= data_df['Size'].astype('int64')
-# data_df['Duration']= data_df['Duration'].astype('float')
-
 # print(data_df.dtypes)
 # print(data_df.head)
 # print(data_df.shape)
@@ -74,7 +70,8 @@ def generate_random_string(length):
     return ''.join(random.choice(letters) for _ in range(length))
 
 
-output_path = f"output/lstm_{generate_random_string(4)}"
+current_time = "_".join(str(datetime.strptime(str(datetime.now()), "%Y-%m-%d %H:%M:%S.%f")).split())
+output_path = f"output/lstm_{current_time}"
 
 print("Creating directory", output_path) 
 os.makedirs(output_path)
@@ -83,6 +80,11 @@ os.makedirs(output_path)
 def Sequential_Input_LSTM(total_data_df, time_step_size, predict_next=False):
     yy = total_data_df['Label'].replace(to_replace="Benign", value="0").replace(to_replace="Malicious", value="1").astype('int64')
     XX = total_data_df.drop(['Label'], axis=1)
+    
+    # XX['Number of Packets']= XX['Number of Packets'].astype('int64')
+    # XX['Direction']= XX['Direction'].astype('int64')
+    # XX['Size']= XX['Size'].astype('int64')
+    # XX['Duration']= XX['Duration'].astype('float')
 
     df_x_np = XX.to_numpy()
     df_y_np = yy.to_numpy()
@@ -93,9 +95,9 @@ def Sequential_Input_LSTM(total_data_df, time_step_size, predict_next=False):
     for i in range(0, len(df_x_np) - time_step_size):
         if predict_next:
             row = [a for a in df_x_np[i:i + time_step_size]]
-            next_row = [a for a in df_x_np[i + 1]]
+            next_row = [a for a in df_x_np[i + time_step_size: i + 2 * time_step_size]]
 
-            if (np.isnan(row).all()) or (np.isnan(next_row).all()):
+            if (np.isnan(row).any()) or (np.isnan(next_row).any()):
                 continue
 
             X.append(row)
@@ -110,8 +112,6 @@ def Sequential_Input_LSTM(total_data_df, time_step_size, predict_next=False):
 
     return np.array(X), np.array(y)
 
-# ...
-
 from keras import backend as K
 
 def custom_mse(y_true, y_pred):
@@ -121,38 +121,60 @@ def custom_mse(y_true, y_pred):
 
 def model(data_df, timestep, number_of_lstm_nodes):
     X, y = Sequential_Input_LSTM(data_df, timestep, predict_next=True)
-    X[np.isnan(X)] = 0
-    y[np.isnan(y)] = 0
+    # X[np.isnan(X)] = 0
+    # y[np.isnan(y)] = 0
+    
+    X = np.asarray(X).astype('float32')
+    y = np.asarray(y).astype('float32')
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
 
-    print("count unique values for y.")
-    print(np.unique(y_train, return_counts=True))
-    print(np.unique(y, return_counts=True))
+    # print("count unique values for y.")
+    # print(np.unique(y_train, return_counts=True))
+    # print(np.unique(y, return_counts=True))
 
     print(len(X_train))
 
+    # model = Sequential()
+    # model.add(Dense(units=number_of_lstm_nodes, activation='relu', input_shape=(timestep, 4))) 
+    # model.add(LSTM(units=number_of_lstm_nodes))
+    # # model.add(Dropout(rate=0.1))
+    # # model.add(RepeatVector(1))
+    # # model.add(LSTM(units=number_of_lstm_nodes, activation='relu', return_sequences=True))
+    # model.add(Dropout(rate=0.1))
+    # model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
+    # model.add(Dropout(rate=0.1))
+    # model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
+    # model.add(Dropout(rate=0.1))
+    # model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
+    # # model.add(Lambda(lambda x: x[0])) 
+    # model.add(Dense(units=4, activation='linear'))
+    # # model.add(Flatten())
+    # model.compile(optimizer='adam', loss='mse')
+    
     model = Sequential()
     model.add(Dense(units=number_of_lstm_nodes, activation='relu', input_shape=(timestep, 4))) 
-    model.add(LSTM(units=number_of_lstm_nodes))
-    # model.add(Dropout(rate=0.1))
-    # model.add(RepeatVector(1))
-    # model.add(LSTM(units=number_of_lstm_nodes, activation='relu', return_sequences=True))
+    model.add(LSTM(units=number_of_lstm_nodes, return_sequences=True))
     model.add(Dropout(rate=0.1))
     model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
     model.add(Dropout(rate=0.1))
     model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
     model.add(Dropout(rate=0.1))
     model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
-    # model.add(Lambda(lambda x: x[0])) 
     model.add(Dense(units=4, activation='linear'))
-    # model.add(Flatten())
+    
+    # print(model.summary())
+    
     model.compile(optimizer='adam', loss='mse')
     
     print(model.summary())
     
     print("training lstm")
-    model.fit(X_train, y_train, epochs=1, batch_size=64, verbose=2)
+    model.fit(X_train, y_train, epochs=10, batch_size=64, verbose=2)
+    
+    model_name = f"model_time_step_{timestep}_nodes_{number_of_lstm_nodes}.h5"
+    print("saving model as ", model_name)
+    model.save(f'{output_path}/{model_name}')
     
     print("training lstm done!!")
     y_pred = model.predict(X_test, verbose=2)
@@ -165,29 +187,77 @@ def model(data_df, timestep, number_of_lstm_nodes):
     
     print("y_pred 0 ", y_pred[0][0])
     
+    print("y_test 0 ", y_test[0][0])
+    
+    print("diff 0 ", y_test[0][0] - y_pred[0][0])
+    
     benign_mse = []
     malicious_mse = []
     mal_X, mal_y = Sequential_Input_LSTM(malicious_df, timestep, predict_next=True)
-    y_pred_mal = model.predict(mal_X[:len(y_test)], verbose=2)
+    y_pred_mal = model.predict(mal_X, verbose=2)
     
     for i in range(len(y_pred)):
-        mse = np.mean(np.square(y_test[i] - y_pred[i][0]))
+        mse = np.mean(np.square(y_test[i][0] - y_pred[i][0]))
         benign_mse.append(mse)
-    # print("Mean Squared Error:", benign_mse)
+    # print("Mean Squared Error:", sorted(benign_mse)[0:20])
+    
+    benign_mse = sorted(benign_mse)
+    percentage = 90
+    index_cutoff = int(len(benign_mse) * (percentage / 100))
+    benign_mse = benign_mse[:index_cutoff]
     
     
-    
-    for i in range(len(y_pred)):
-        mse = np.mean(np.square(mal_y[i] - y_pred_mal[i][0]))
-        malicious_mse.append(mse)
-    # print("Mean Squared Error:", malicious_mse)
-    
-    plt.plot(range(len(y_pred)), sorted(benign_mse), marker='o', color="blue")
-    plt.plot(range(len(y_pred), 2 * len(y_pred)), sorted(malicious_mse), marker='o', color="red")
+    xs, ys = zip(*sorted(zip(range(len(benign_mse)), benign_mse)))
+    plt.plot(xs, ys)
     plt.xlabel('count')
     plt.ylabel('mse')
-    plt.savefig(f"{output_path}/mse_label_{lstm_nodes}.png")
+    plt.savefig(f"{output_path}/mse_benign_label_sorted_{lstm_nodes}.png")
     plt.clf()
+    
+    for i in range(len(y_pred_mal)):
+        mse = np.mean(np.square(mal_y[i][:4] - y_pred_mal[i][:4]))
+        malicious_mse.append(mse)
+    # print("Mean Squared Error:", malicious_mse)
+    malicious_mse = sorted(malicious_mse)
+    percentage = 90
+    index_cutoff = int(len(malicious_mse) * (percentage / 100))
+    malicious_mse = malicious_mse[:index_cutoff]
+    
+    # xs, ys = zip(*sorted(zip(range(len(malicious_mse)), malicious_mse)))
+    # plt.plot(xs, ys)
+    # # plt.plot(range(len(y_pred)), sorted(benign_mse), color="blue")
+    # # malicious_mse_90 = sorted(malicious_mse)[:int(0.5 * len(malicious_mse))]
+    # # plt.plot(range(len(malicious_mse)), malicious_mse, marker='o', color="red")
+    # plt.xlabel('count')
+    # plt.ylabel('mse')
+    # plt.savefig(f"{output_path}/mse_label_{lstm_nodes}.png")
+    # plt.clf()
+    
+    xs, ys = zip(*sorted(zip(range(len(malicious_mse)), malicious_mse)))
+    plt.plot(xs, ys)
+    plt.xlabel('count')
+    plt.ylabel('mse')
+    plt.savefig(f"{output_path}/mse_malicious_label_sorted_{lstm_nodes}_nodes_{timestep}.png")
+    plt.clf()
+    
+    xs, ys = zip(*sorted(zip(range(len(malicious_mse)), malicious_mse)))
+    plt.plot(xs, ys, label='Malicious', color='orange')
+    xs, ys = zip(*sorted(zip(range(len(malicious_mse), len(malicious_mse) + len(benign_mse)), sorted(benign_mse))))
+    plt.plot(xs, ys, label='Benign', color='blue')
+    plt.xlabel('count')
+    plt.ylabel('mse')
+    plt.savefig(f"{output_path}/mse_label_combined_sorted_{lstm_nodes}_nodes_{timestep}.png")
+    plt.clf()
+
+    #create histogram with density curve overlaid
+    sns_plot = sns.displot(benign_mse, kde=True, bins=500)
+    # fig = sns_plot.get_figure()
+    sns_plot.savefig(f"{output_path}/sns_benign_plot_{lstm_nodes}_nodes_{timestep}.png")
+    
+    #create histogram with density curve overlaid
+    sns_plot = sns.displot(malicious_mse, kde=True, bins=500)
+    # fig = sns_plot.get_figure()
+    sns_plot.savefig(f"{output_path}/sns_malicious_plot_{lstm_nodes}_nodes_{timestep}.png")
     
     # For anomaly detection, you can set a threshold for classifying high MSE as anomalies.
     threshold = 0.1  # Adjust as needed
@@ -205,9 +275,9 @@ def model(data_df, timestep, number_of_lstm_nodes):
 
 # Anomaly detection for different LSTM nodes
 all_accuracies_anomaly = []
-for lstm_nodes in [2048]: #[1024, 2048, 4096, 8192]:
+for lstm_nodes in [4096]: #[1024, 2048, 4096, 8192]:
     accuracies_anomaly = []
-    for timestep in range(5, 6):
+    for timestep in range(8, 9):
         accu = model(df, timestep=timestep, number_of_lstm_nodes=lstm_nodes)
         accuracies_anomaly.append(accu)
     all_accuracies_anomaly.append(accuracies_anomaly)

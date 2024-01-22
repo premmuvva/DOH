@@ -122,7 +122,7 @@ def model(data_df, timestep, number_of_lstm_nodes):
     print(model.summary())
 
     print("training")
-    model.fit(X_train, y_train, epochs=10, batch_size=64, verbose=2)
+    model.fit(X_train, y_train, epochs=1, batch_size=64, verbose=2)
     
     random_string = generate_random_string(6)
     model_name = f"model_time_step_{timestep}_nodes_{number_of_lstm_nodes}_{random_string}.h5"
@@ -146,34 +146,38 @@ def model(data_df, timestep, number_of_lstm_nodes):
     for i in range(len(y_pred)):
         mse = np.mean(np.square(y_test[i] - y_pred[i][0]))
         benign_mse.append(mse)
-    # print("Mean Squared Error:", benign_mse)
+    print("Mean Squared Error:", sorted(benign_mse)[:20])
     
     
     
     for i in range(len(y_pred)):
         mse = np.mean(np.square(mal_y[i] - y_pred_mal[i][0]))
         malicious_mse.append(mse)
-    # print("Mean Squared Error:", malicious_mse)
+    # print("Mean Squared Error:", sorted(malicious_mse))
     
-    plt.plot(range(len(y_pred)), sorted(benign_mse), marker='o', color="blue")
-    plt.plot(range(len(y_pred), 2 * len(y_pred)), sorted(malicious_mse), marker='o', color="red")
-    plt.xlabel('count')
-    plt.ylabel('mse')
+    
+    plot_x = [i for i in range(2 * len(y_pred))]
+    
+    plt.plot(plot_x[:len(y_pred)], sorted(benign_mse), color="blue")
+    # plt.plot(range(len(y_pred), 2 * len(y_pred)), sorted(malicious_mse), marker='o', color="red")
+    # plt.xlabel('count')
+    # plt.ylabel('mse')
     plt.savefig(f"{output_path}/mse_label_{lstm_nodes}.png")
     plt.clf()
     
     
 all_accuracies = []
-for lstm_nodes in [1024, 2048, 4096, 8192]:
+for lstm_nodes in [1024]:
     accuracies = []
-    for timestep in range(5,11):
+    for timestep in range(5,6):
         accu = model(df, timestep=timestep, number_of_lstm_nodes=lstm_nodes)
+        print("accu", accu)
         accuracies.append(accu)
     all_accuracies.append(accuracies)
-    plt.plot(range(1, 11), accuracies, marker='o')
-    plt.xlabel('Time Step')
-    plt.ylabel('Accuracy')
-    plt.savefig(f"{output_path}/lstm_accuracy_10_epoch_nodes_{lstm_nodes}.png")
-    plt.clf()
+    # plt.plot(range(1, 11), accuracies, marker='o')
+    # plt.xlabel('Time Step')
+    # plt.ylabel('Accuracy')
+    # plt.savefig(f"{output_path}/lstm_accuracy_10_epoch_nodes_{lstm_nodes}.png")
+    # plt.clf()
 
 print("all_accuracies", all_accuracies)
