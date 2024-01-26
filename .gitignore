@@ -2,3 +2,5 @@ output/**
 venv/
 *.log
 pcap_split/
+slurm*
+__pycache__

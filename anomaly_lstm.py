@@ -4,6 +4,7 @@ import copy
 import os
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Conv1D, MaxPooling2D, Flatten
+from common_utils import Sequential_Input_LSTM
 
 import pandas as pd
 import numpy as np
@@ -19,35 +20,7 @@ np.set_printoptions(threshold=30)
 print("test run count")
 # print(random.randint(0,10000))
 
-def Sequential_Input_LSTM(total_data_df, time_step_size, predict_next=True):
-    yy = total_data_df['Label'].replace(to_replace="Benign", value="0").replace(to_replace="Malicious", value="1").astype('int64')
-    XX = total_data_df.drop(['Label'], axis=1)
 
-    df_x_np = XX.to_numpy()
-    df_y_np = yy.to_numpy()
-
-    X = []
-    y = []
-
-    for i in range(0, len(df_x_np) - time_step_size):
-        if predict_next:
-            row = [a for a in df_x_np[i:i + time_step_size]]
-            next_row = [a for a in df_x_np[i + 1]]
-
-            if (np.isnan(row).all()) or (np.isnan(next_row).all()):
-                continue
-
-            X.append(row)
-            y.append(next_row)
-        else:
-            row = [a for a in df_x_np[i:i + time_step_size]]
-            if (np.isnan(row).all()):
-                continue
-            X.append(row)
-            label = df_y_np[i + time_step_size]
-            y.append(label)
-
-    return np.array(X), np.array(y)
 
 
 df = pd.DataFrame(columns=['src', 'dst', 'Number of Packets', 'Direction', 'Size', 'Duration', 'RawTimestamp'])
@@ -87,14 +60,24 @@ def generate_random_string(length):
     return ''.join(random.choice(letters) for _ in range(length))
 
 
-output_path = f"output/lstm_{generate_random_string(4)}"
+from datetime import datetime
+current_time = "_".join(str(datetime.strptime(str(datetime.now()), "%Y-%m-%d %H:%M:%S.%f")).split())
+output_path = f"output/anomaly_lstm_{current_time}"
+
 print("Creating directory", output_path) 
 os.makedirs(output_path)
 
 def model(data_df, timestep, number_of_lstm_nodes):
     X, y = Sequential_Input_LSTM(data_df, timestep)
     X[np.isnan(X)] = 0
+    y[np.isnan(y)] = 0
+    
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
+    np.save(f"{output_path}/X_train_{timestep}_timesteps.npy", X_train)
+    np.save(f"{output_path}/X_test_{timestep}_timesteps.npy", X_test)
+    np.save(f"{output_path}/y_train_{timestep}_timesteps.npy", y_train)
+    np.save(f"{output_path}/y_test_{timestep}_timesteps.npy", y_test)
+
     print("count unique values for y.")
     print(np.unique(y_train, return_counts=True))
     print(np.unique(y, return_counts=True))
@@ -126,6 +109,8 @@ def model(data_df, timestep, number_of_lstm_nodes):
     
     random_string = generate_random_string(6)
     model_name = f"model_time_step_{timestep}_nodes_{number_of_lstm_nodes}_{random_string}.h5"
+    print("saving model as ", model_name)
+    model.save(f'{output_path}/{model_name}')
     
     print("training lstm done!!")
     y_pred = model.predict(X_test, verbose=2)

@@ -17,6 +17,7 @@ import string
 from datetime import datetime
 import matplotlib.pyplot as plt
 import seaborn as sns
+from common_utils import Sequential_Input_LSTM_transpose as Sequential_Input_LSTM
 
 np.set_printoptions(threshold=30)
 print("test run count")
@@ -49,8 +50,6 @@ def fetch_dataset():
     
     # df = pd.concat([benign_df, malicious_df.loc[random_malicious_start: random_malicious_start + benign_len]])
     df = benign_df
-    # print(df)
-    print("reddy")
 
 fetch_dataset() 
 
@@ -58,59 +57,17 @@ fetch_dataset()
 print(df)
 
 
-
-# print(data_df.dtypes)
-# print(data_df.head)
-# print(data_df.shape)
-
-# np.save('output/11/totaldata.npy', data_df)
-
 def generate_random_string(length):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for _ in range(length))
 
 
 current_time = "_".join(str(datetime.strptime(str(datetime.now()), "%Y-%m-%d %H:%M:%S.%f")).split())
-output_path = f"output/lstm_{current_time}"
+output_path = f"output/lstm_anomaly_{current_time}"
 
 print("Creating directory", output_path) 
 os.makedirs(output_path)
 
-
-def Sequential_Input_LSTM(total_data_df, time_step_size, predict_next=False):
-    yy = total_data_df['Label'].replace(to_replace="Benign", value="0").replace(to_replace="Malicious", value="1").astype('int64')
-    XX = total_data_df.drop(['Label'], axis=1)
-    
-    # XX['Number of Packets']= XX['Number of Packets'].astype('int64')
-    # XX['Direction']= XX['Direction'].astype('int64')
-    # XX['Size']= XX['Size'].astype('int64')
-    # XX['Duration']= XX['Duration'].astype('float')
-
-    df_x_np = XX.to_numpy()
-    df_y_np = yy.to_numpy()
-
-    X = []
-    y = []
-
-    for i in range(0, len(df_x_np) - time_step_size):
-        if predict_next:
-            row = [a for a in df_x_np[i:i + time_step_size]]
-            next_row = [a for a in df_x_np[i + time_step_size: i + 2 * time_step_size]]
-
-            if (np.isnan(row).any()) or (np.isnan(next_row).any()):
-                continue
-
-            X.append(row)
-            y.append(next_row)
-        else:
-            row = [a for a in df_x_np[i:i + time_step_size]]
-            if (np.isnan(row).all()):
-                continue
-            X.append(row)
-            label = df_y_np[i + time_step_size]
-            y.append(label)
-
-    return np.array(X), np.array(y)
 
 from keras import backend as K
 
@@ -128,32 +85,21 @@ def model(data_df, timestep, number_of_lstm_nodes):
     y = np.asarray(y).astype('float32')
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
-
+    
+    np.save(f"{output_path}/X_train_{timestep}_timesteps.npy", X_train)
+    np.save(f"{output_path}/X_test_{timestep}_timesteps.npy", X_test)
+    np.save(f"{output_path}/y_train_{timestep}_timesteps.npy", y_train)
+    np.save(f"{output_path}/y_test_{timestep}_timesteps.npy", y_test)
+    
     # print("count unique values for y.")
     # print(np.unique(y_train, return_counts=True))
     # print(np.unique(y, return_counts=True))
 
     print(len(X_train))
 
-    # model = Sequential()
-    # model.add(Dense(units=number_of_lstm_nodes, activation='relu', input_shape=(timestep, 4))) 
-    # model.add(LSTM(units=number_of_lstm_nodes))
-    # # model.add(Dropout(rate=0.1))
-    # # model.add(RepeatVector(1))
-    # # model.add(LSTM(units=number_of_lstm_nodes, activation='relu', return_sequences=True))
-    # model.add(Dropout(rate=0.1))
-    # model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
-    # model.add(Dropout(rate=0.1))
-    # model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
-    # model.add(Dropout(rate=0.1))
-    # model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
-    # # model.add(Lambda(lambda x: x[0])) 
-    # model.add(Dense(units=4, activation='linear'))
-    # # model.add(Flatten())
-    # model.compile(optimizer='adam', loss='mse')
     
     model = Sequential()
-    model.add(Dense(units=number_of_lstm_nodes, activation='relu', input_shape=(timestep, 4))) 
+    model.add(Dense(units=number_of_lstm_nodes, activation='relu', input_shape=(4, timestep))) 
     model.add(LSTM(units=number_of_lstm_nodes, return_sequences=True))
     model.add(Dropout(rate=0.1))
     model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
@@ -161,7 +107,7 @@ def model(data_df, timestep, number_of_lstm_nodes):
     model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
     model.add(Dropout(rate=0.1))
     model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
-    model.add(Dense(units=4, activation='linear'))
+    model.add(Dense(units=timestep, activation='linear'))
     
     # print(model.summary())
     

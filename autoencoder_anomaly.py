@@ -84,7 +84,7 @@ def Sequential_Input_LSTM(total_data_df, time_step_size, predict_next=False):
             row = [a for a in df_x_np[i:i + time_step_size]]
             next_row = [a for a in df_x_np[i + 1]]
 
-            if (np.isnan(row).all()) or (np.isnan(next_row).all()):
+            if (np.isnan(row).any()) or (np.isnan(next_row).any()):
                 continue
 
             X.append(np.array(row).reshape(20))

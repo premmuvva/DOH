@@ -3,7 +3,7 @@
 import copy
 import os
 from keras.models import Sequential
-from keras.layers import LSTM, Dense
+from keras.layers import LSTM, Dense, Conv1D, GlobalMaxPooling1D, Flatten, Dense, Dropout
 import pandas as pd
 import numpy as np
 import tensorflow as tf
@@ -80,7 +80,6 @@ def generate_random_string(length):
 from datetime import datetime
 current_time = "_".join(str(datetime.strptime(str(datetime.now()), "%Y-%m-%d %H:%M:%S.%f")).split())
 output_path = f"output/lstm_{current_time}"
-
 print("Creating directory", output_path) 
 os.makedirs(output_path)
 
@@ -106,11 +105,15 @@ def model(data_df, timestep, number_of_lstm_nodes):
     print(len(X_train))
 
     model = Sequential()
-    model.add(Dense(units=number_of_lstm_nodes, activation='relu', input_shape=(timestep, 4))) 
-    model.add(LSTM(units=number_of_lstm_nodes))
+    model.add(Conv1D(filters=number_of_lstm_nodes, kernel_size=3, activation='relu', input_shape=(timestep, 4)))
+    model.add(GlobalMaxPooling1D())
+    model.add(Flatten())
     model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
+    model.add(Dropout(0.2))  # Add dropout with a rate of 0.5 (you can adjust this value)
     model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
-    model.add(Dense(units=1, activation='linear'))
+    model.add(Dropout(0.2))  # Add dropout with a rate of 0.5 (you can adjust this value)
+    model.add(Dense(units=1, activation='sigmoid'))  # Sigmoid activation for values between 0 and 1
+
 
     model.compile(optimizer='adam', loss='mse')
     
@@ -157,11 +160,11 @@ def model(data_df, timestep, number_of_lstm_nodes):
 all_accuracies = []
 for lstm_nodes in [1024, 2048, 4096]:
     accuracies = []
-    for timestep in range(1,11):
+    for timestep in range(3,11):
         accu = model(df, timestep=timestep, number_of_lstm_nodes=lstm_nodes)
         accuracies.append(accu)
     all_accuracies.append(accuracies)
-    plt.plot(range(1, 11), accuracies, marker='o')
+    plt.plot(range(3, 11), accuracies, marker='o')
     plt.xlabel('Time Step')
     plt.ylabel('Accuracy')
     plt.savefig(f"{output_path}/lstm_accuracy_10_epoch_nodes_{lstm_nodes}.png")
