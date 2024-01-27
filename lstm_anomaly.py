@@ -18,40 +18,19 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import seaborn as sns
 from common_utils import Sequential_Input_LSTM_transpose as Sequential_Input_LSTM
+from common_utils import fetch_dataset
+from keras import backend as K
 
 np.set_printoptions(threshold=30)
 print("test run count")
 # print(random.randint(0,10000))
 
 
-df = pd.DataFrame(columns=['src', 'dst', 'Number of Packets', 'Direction', 'Size', 'Duration', 'RawTimestamp'])
-malicious_df = pd.DataFrame(columns=['src', 'dst', 'Number of Packets', 'Direction', 'Size', 'Duration', 'RawTimestamp'])
+# df = pd.DataFrame(columns=['src', 'dst', 'Number of Packets', 'Direction', 'Size', 'Duration', 'RawTimestamp'])
+# malicious_df = pd.DataFrame(columns=['src', 'dst', 'Number of Packets', 'Direction', 'Size', 'Duration', 'RawTimestamp'])
 
 
-def fetch_dataset():
-    global df, malicious_df
-    benign_df = pd.read_csv("output/merge_npy/benignV2_final_without_multi_index.csv", header=[0], low_memory=False)
-    benign_df['Label'] = 0
-    benign_df = benign_df.drop(['RawTimestamp', 'src', 'dst'], axis=1)
-    # benign_df.to_csv("output/final_benign_dataset.csv", index=False)
-    print(len(benign_df))
-    
-    malicious_df = pd.read_csv("output/temp/maliciousv2_final_without_multi_index.csv", header=[0], low_memory=False)
-    malicious_df['Label'] = 1
-    malicious_df = malicious_df.drop(['RawTimestamp', 'src', 'dst'], axis=1)
-    # malicious_df.to_csv("output/final_malicious_dataset.csv", index=False)
-    benign_len = len(benign_df)
-    malicious_len = len(malicious_df)
-    random_malicious_start = random.randint(0, malicious_len - benign_len - 1)
-    print("random start value ", random_malicious_start)
-    
-    print("benign length", benign_len)
-    print("malicious length", malicious_len)
-    
-    # df = pd.concat([benign_df, malicious_df.loc[random_malicious_start: random_malicious_start + benign_len]])
-    df = benign_df
-
-fetch_dataset() 
+df, malicious_df = fetch_dataset() 
 
 
 print(df)
@@ -68,9 +47,6 @@ output_path = f"output/lstm_anomaly_{current_time}"
 print("Creating directory", output_path) 
 os.makedirs(output_path)
 
-
-from keras import backend as K
-
 def custom_mse(y_true, y_pred):
     # Custom MSE implementation
     # print(y_true, y_pred)
@@ -83,8 +59,9 @@ def model(data_df, timestep, number_of_lstm_nodes):
     
     X = np.asarray(X).astype('float32')
     y = np.asarray(y).astype('float32')
-
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
+    
+    size_limit = int(0.1 * len(X))
+    X_train, X_test, y_train, y_test = train_test_split(X[:size_limit], y[:size_limit], test_size=0.20, random_state=42)
     
     np.save(f"{output_path}/X_train_{timestep}_timesteps.npy", X_train)
     np.save(f"{output_path}/X_test_{timestep}_timesteps.npy", X_test)
@@ -101,11 +78,15 @@ def model(data_df, timestep, number_of_lstm_nodes):
     model = Sequential()
     model.add(Dense(units=number_of_lstm_nodes, activation='relu', input_shape=(4, timestep))) 
     model.add(LSTM(units=number_of_lstm_nodes, return_sequences=True))
-    model.add(Dropout(rate=0.1))
+    model.add(Dropout(rate=0.2))
     model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
-    model.add(Dropout(rate=0.1))
+    model.add(Dropout(rate=0.2))
+    model.add(LSTM(units=number_of_lstm_nodes, return_sequences=True))
+    # model.add(Dropout(rate=0.2))
+    # model.add(LSTM(units=number_of_lstm_nodes, return_sequences=True, activation='relu'))
+    model.add(Dropout(rate=0.2))
     model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
-    model.add(Dropout(rate=0.1))
+    model.add(Dropout(rate=0.2))
     model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
     model.add(Dense(units=timestep, activation='linear'))
     
@@ -116,7 +97,7 @@ def model(data_df, timestep, number_of_lstm_nodes):
     print(model.summary())
     
     print("training lstm")
-    model.fit(X_train, y_train, epochs=10, batch_size=64, verbose=2)
+    model.fit(X_train, y_train, epochs=3, batch_size=64, verbose=2)
     
     model_name = f"model_time_step_{timestep}_nodes_{number_of_lstm_nodes}.h5"
     print("saving model as ", model_name)
@@ -223,7 +204,7 @@ def model(data_df, timestep, number_of_lstm_nodes):
 all_accuracies_anomaly = []
 for lstm_nodes in [4096]: #[1024, 2048, 4096, 8192]:
     accuracies_anomaly = []
-    for timestep in range(8, 9):
+    for timestep in range(5, 6):
         accu = model(df, timestep=timestep, number_of_lstm_nodes=lstm_nodes)
         accuracies_anomaly.append(accu)
     all_accuracies_anomaly.append(accuracies_anomaly)

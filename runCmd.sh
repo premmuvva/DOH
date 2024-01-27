@@ -12,11 +12,12 @@
 echo "Reached before python lines of file: $1 start"
 date
 module load TensorFlow/2.7.1-foss-2021b-CUDA-11.4.1 
-source venv/bin/activate
+source ~/.zshrc
+# source venv/bin/activate
 echo "Reached before python lines of file: $1"
-venv/bin/python $1
-# ./pcap_split.sh /home/x286t435/thesis/time-series/dataset/Malicious/ output/pcap_split/maliciousv2
-# ./pcap_split.sh /home/x286t435/thesis/time-series/dataset/Benign output/pcap_split/benignV2
+# venv/bin/python $1
+./pcap_split.sh /home/x286t435/thesis/time-series/dataset/Malicious/iodine output/pcap_split/maliciousv2/iodine
+# ./pcap_split.sh /home/x286t435/thesis/time-series/dataset/Benign/Cloudflare output/pcap_split/benignV2
 echo "After python lines of file: $1"
 date
 # find "/home/x286t435/thesis/time-series/dataset/Malicious/" -type f -print0 

@@ -138,7 +138,8 @@ def save_dataset(X_train, X_test, y_train, y_test, output_path, timestep):
     
 def fetch_dataset():
     # global df, malicious_df
-    benign_df = pd.read_csv("output/merge_npy/benignV2_final_without_multi_index.csv", header=[0], low_memory=False)
+    # benign_df = pd.read_csv("output/merge_npy/benignV2_final_without_multi_index.csv", header=[0], low_memory=False)
+    benign_df = pd.read_csv("output/merge_npy/benignV2_cloudflare.csv", header=[0], low_memory=False)
     benign_df['Label'] = 0
     benign_df = benign_df.drop(['RawTimestamp', 'src', 'dst'], axis=1)
     # benign_df.to_csv("output/final_benign_dataset.csv", index=False)

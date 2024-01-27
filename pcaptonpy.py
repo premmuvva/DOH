@@ -63,6 +63,7 @@ def process_pcap(pcap_file, df):
 
 
 columns = ['src', 'dst', 'Number of Packets', 'Direction', 'Size', 'Duration', 'RawTimestamp']
+cloud_flare_files = ["dump_00001_20200113152847", "dump_00002_20200113162614", "dump_00003_20200113182754", "dump_00004_20200113193921", "dump_00005_20200113205730"]
 
 df_ar = []
 
@@ -88,10 +89,13 @@ def get_process_params(dir_path, output_path):
     for root, dirs, files in os.walk(dir_path):
         for filename in files:
             if filename.endswith(".pcap"):
-                file_path = os.path.join(root, filename)
-                file_size = os.path.getsize(file_path)
-                file_list.append((file_path, file_size, i))
-                i+=1
+                if any(filename.startswith(prefix) for prefix in cloud_flare_files):
+                    file_path = os.path.join(root, filename)
+                    file_size = os.path.getsize(file_path)
+                    file_list.append((file_path, file_size, os.path.splitext(filename)[0]))
+                    i+=1
+                    if(i%100 == 0):
+                        print(filename)
     
         # Sort the file list based on file size (ascending order)
     # sorted_file_list = sorted(file_list, key=lambda x: x[1])
@@ -105,8 +109,8 @@ def run_executor(dir_path, output_path):
     file_list = get_process_params(dir_path, output_path)
     df_ar = [i for i in range(len(file_list))]
     print("Total number of file to process:", len(file_list))
-    print("file_list[1000]", file_list[20000])
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:    
+    # print("file_list[1000]", file_list[20000])
+    with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:    
         executor.map(process_pcap_wrapper, file_list[::-1])
 
 def process(input_dir, output_path):
@@ -115,8 +119,10 @@ def process(input_dir, output_path):
     print("final list of output dfs", len(df_ar))
 
 
+# Don't forget / at the end
+
 # process("/home/x286t435/thesis/time-series/dataset/Malicious", 'output/Malicious.csv')
 # process("/home/x286t435/thesis/time-series/dohv2/output/pcap_split/benign/", 'output/npy/Benign.npy')
-process("output/pcap_split/maliciousv2/", 'output/npy/maliciousv2/')
-# process("output/pcap_split/benignV2/", 'output/npy/benignV2/')
+# process("output/pcap_split/maliciousv2/", 'output/npy/maliciousv2/')
+process("output/pcap_split/benignV2/", 'output/npy/benignV2/cloudflare/')
 

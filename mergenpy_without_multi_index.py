@@ -15,16 +15,14 @@ def merge_npy_files_in_directory(directory_path, output_path, progress_file):
     
     if os.path.exists(progress_file):
         with open(progress_file, 'r') as file:
-            last_processed_file = file.readline().strip()
+            processed_files = file.read().splitlines()
     else:
-        last_processed_file = None
+        processed_files = []
         
     # Skip files until the last processed file is encountered
-    if last_processed_file is not None:
-        print("total", len(npy_files))
-        npy_files = npy_files[npy_files.index(last_processed_file):]
-        print("to be complete", len(npy_files))
-
+    if processed_files:
+        npy_files = [file for file in npy_files if file not in processed_files]
+    
     if not npy_files:
         print("No .npy files found in the specified directory.", flush=True)
         return
@@ -33,7 +31,7 @@ def merge_npy_files_in_directory(directory_path, output_path, progress_file):
     coloumns= ['src', 'dst', 'Number of Packets', 'Direction', 'Size', 'Duration', 'RawTimestamp']
     
     # Load the merged data from the progress file or start with the first file
-    if last_processed_file is None or not os.path.exists(output_path):
+    if not os.path.exists(output_path):
         merged_data = np.load(os.path.join(directory_path, npy_files[0]), allow_pickle=True)
         df = pd.DataFrame(merged_data.T, columns=coloumns)
 
@@ -62,20 +60,20 @@ def merge_npy_files_in_directory(directory_path, output_path, progress_file):
         total_memory_usage = memory_usage
         del df2
         gc.collect()
-        
+        processed_files.append(npy_file)
         if i%100 == 0:
             print(f"merging file : {npy_file} of length {len(df)}")
             df.to_csv(output_path, index=False)
-            # print("saving...")
+            print(f"saving...{npy_file}", len(processed_files))
             with open(progress_file, 'w') as file:
-                file.write(npy_file)
+                file.write('\n'.join(processed_files))
         i+=1
         
     df.to_csv(output_path, index=False)
     print(f"Merged data saved to {output_path}.")
 
 
-merge_npy_files_in_directory('output/npy/benignV2/', 'output/merge_npy/benignV2_final_without_multi_index.csv', 'output/merge_npy/benign_final_without_multi_index_progress.log')
+merge_npy_files_in_directory('output/npy/benignV2/cloudflare', 'output/merge_npy/benignV2_cloudflare.csv', 'output/merge_npy/benignV2_cloudflare.log')
 # merge_npy_files_in_directory('output/npy/maliciousv2/', 'output/temp/maliciousv2_final_without_multi_index.csv', 'output/temp/maliciousv2_final_without_multi_index_progress.log')
 
 

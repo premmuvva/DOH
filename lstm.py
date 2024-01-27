@@ -13,6 +13,8 @@ import random
 from sklearn.metrics import confusion_matrix
 import string
 import matplotlib.pyplot as plt
+from common_utils import fetch_dataset
+
 
 np.set_printoptions(threshold=30)
 print("test run count")
@@ -42,31 +44,7 @@ def Sequential_Input_LSTM(total_data_df, time_step_size):
 df = pd.DataFrame(columns=['src', 'dst', 'Number of Packets', 'Direction', 'Size', 'Duration', 'RawTimestamp'])
 
 
-def fetch_dataset():
-    global df
-    benign_df = pd.read_csv("output/merge_npy/benignV2_final_without_multi_index.csv", header=[0], low_memory=False)
-    benign_df['Label'] = 0
-    benign_df = benign_df.drop(['RawTimestamp', 'src', 'dst'], axis=1)
-    # benign_df.to_csv("output/final_benign_dataset.csv", index=False)
-    print(len(benign_df))
-    
-    malicious_df = pd.read_csv("output/temp/maliciousv2_final_without_multi_index.csv", header=[0], low_memory=False)
-    malicious_df['Label'] = 1
-    malicious_df = malicious_df.drop(['RawTimestamp', 'src', 'dst'], axis=1)
-    # malicious_df.to_csv("output/final_malicious_dataset.csv", index=False)
-    benign_len = len(benign_df)
-    malicious_len = len(malicious_df)
-    random_malicious_start = random.randint(0, malicious_len - benign_len - 1)
-    print("random start value ", random_malicious_start)
-    
-    print("benign length", benign_len)
-    print("malicious length", malicious_len)
-    
-    df = pd.concat([benign_df, malicious_df.loc[random_malicious_start: random_malicious_start + benign_len]])
-    # print(df)
-    print("reddy")
-
-fetch_dataset() 
+df, _ = fetch_dataset() 
 
 
 print(df)
@@ -97,7 +75,7 @@ def model(data_df, timestep, number_of_lstm_nodes):
     model.compile(optimizer='adam', loss='mse')
 
     print("training")
-    model.fit(X_train, y_train, epochs=10, batch_size=64)
+    model.fit(X_train, y_train, epochs=10, batch_size=64, verbose=2)
     
     random_string = generate_random_string(6)
     model_name = f"model_time_step_{timestep}_{random_string}.h5"
@@ -106,7 +84,7 @@ def model(data_df, timestep, number_of_lstm_nodes):
     
     model.save(f'output/model/{model_name}')
     
-    y_pred = model.predict(X_test, batch_size=32, verbose=1)
+    y_pred = model.predict(X_test, batch_size=32, verbose=2)
     plot_x = [i for i in range(len(y_pred))]
     
     z_pred = [x for _,x in sorted(zip(y_test, y_pred))]

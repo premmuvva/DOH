@@ -4,6 +4,7 @@ import tensorflow.keras as keras
 import pandas as pd
 from sklearn.metrics import roc_curve, auc
 import matplotlib.pyplot as plt
+import random
 
 from keras import backend as K
 
@@ -11,7 +12,7 @@ def custom_mse(y_true, y_pred):
     return K.mean(K.square(y_pred[:4] - y_true[:4]), axis=-1)
 
 # output_path = "output/anomaly_lstm_2024-01-25_02:47:38.635190"
-output_path = "output/lstm_anomaly_2024-01-25_15:26:03.103029"
+output_path = "output/lstm_anomaly_2024-01-26_23:52:38.664442"
 number_of_lstm_nodes = 4096
 timestep = 8
 random_string = ""
@@ -31,7 +32,9 @@ malicious_df = malicious_df.drop(['RawTimestamp', 'src', 'dst'], axis=1)
 benign_mse = []
 malicious_mse = []
 mal_X, mal_y = Sequential_Input_LSTM(malicious_df, timestep, predict_next=True)
-y_pred_mal = model.predict(mal_X[:len(y_test)], verbose=2)
+start = 0 #random.randint(0, len(X_test))
+end = int(len(mal_y)) + start
+y_pred_mal = model.predict(mal_X[start:end], verbose=2)
 
 y_pred_benign = model.predict(X_test, verbose=2)
 
@@ -56,8 +59,10 @@ print("NaN in y_true:", np.isnan(y_true).any())
 print("NaN in y_scores:", np.isnan(y_scores).any())
 
 # Calculate ROC curve
-fpr, tpr, _ = roc_curve(y_true, y_scores)
+fpr, tpr, thresholds = roc_curve(y_true, y_scores)
 
+
+print("thresholds", thresholds)
 print("fpr", fpr)
 print("tpr", tpr)
 # Check for NaN or infinite values in outputs
@@ -74,7 +79,7 @@ plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
 plt.title('ROC Curve')
 plt.legend(loc='lower right')
-plt.savefig(f"{output_path}/roc_{number_of_lstm_nodes}_nodes_{timestep}_timestep.png")
+plt.savefig(f"{output_path}/roc_3_{number_of_lstm_nodes}_nodes_{timestep}_timestep.png")
 
 
 threshold = 0.57  # Adjust as needed
