@@ -33,11 +33,14 @@ def Sequential_Input_LSTM_transpose(total_data_df, time_step_size, predict_next=
             y.append(np.array(next_row))
         else:
             row = [a for a in df_x_np[i:i + time_step_size]]
-            if (np.isnan(row).all()):
+            next_row = [a for a in df_x_np[i + time_step_size: i + 2 * time_step_size]]
+            # next_row = [a for a in df_x_np[i + time_step_size]]
+
+            if (np.isnan(row).any()) or (np.isnan(next_row).any()) :#or len(next_row) != time_step_size:
                 continue
-            X.append(row)
-            label = df_y_np[i + time_step_size]
-            y.append(label)
+
+            X.append(np.array(row))
+            y.append(np.array(next_row))
 
     return np.array(X), np.array(y)
 
@@ -139,11 +142,11 @@ def Sequential_Input_LSTM(total_data_df, time_step_size, predict_next=True):
 
     return np.array(X), np.array(y)
 
-def save_dataset(X_train, X_test, y_train, y_test, output_path, timestep):
-    np.save(f"{output_path}/X_train_{timestep}_timesteps.npy", X_train)
-    np.save(f"{output_path}/X_test_{timestep}_timesteps.npy", X_test)
-    np.save(f"{output_path}/y_train_{timestep}_timesteps.npy", y_train)
-    np.save(f"{output_path}/y_test_{timestep}_timesteps.npy", y_test)
+def save_dataset(X_train, X_test, y_train, y_test, output_path, timestep, dim=256):
+    np.save(f"{output_path}/X_train_{timestep}_timesteps_{dim}_dim.npy", X_train)
+    np.save(f"{output_path}/X_test_{timestep}_timesteps_{dim}_dim.npy", X_test)
+    np.save(f"{output_path}/y_train_{timestep}_timesteps_{dim}_dim.npy", y_train)
+    np.save(f"{output_path}/y_test_{timestep}_timesteps_{dim}_dim.npy", y_test)
     
 def fetch_dataset():
     # global df, malicious_df

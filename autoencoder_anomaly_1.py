@@ -38,9 +38,13 @@ def generate_random_string(length):
 from datetime import datetime
 current_time = "_".join(str(datetime.strptime(str(datetime.now()), "%Y-%m-%d %H:%M:%S.%f")).split())
 output_path = f"output/autoencoder_anomaly_1_{current_time}"
+dataset_path = f"{output_path}/dataset"
+model_path = f"{output_path}/model"
 
 print("Creating directory", output_path) 
 os.makedirs(output_path)
+os.makedirs(dataset_path)
+os.makedirs(model_path)
 
 
 
@@ -60,18 +64,18 @@ def custom_mse(y_true, y_pred):
 # Function to create autoencoder model
 def create_autoencoder(input_size, timestep, encoding_dim):
     input_layer = Input(shape=(input_size, 4))
-    lstm = LSTM(units=encoding_dim)(input_layer)
+    lstm = LSTM(units=4*encoding_dim)(input_layer)
     # flattened = Flatten()(lstm)
-    encoded = Dense(encoding_dim, activation='relu')(lstm)
-    encoded_1 = Dense(1024, activation='relu')(encoded)
-    encoded_2 = Dense(512, activation='relu')(encoded_1)
-    encoded_2_1 = Dense(256, activation='relu')(encoded_2)
-    encoded_2_2 = Dense(512, activation='relu')(encoded_2_1)
-    encoded_3 = Dense(1024, activation='relu')(encoded_2_2)
-    encoded_4 = Dense(encoding_dim, activation='relu')(encoded_3)
-    decoded = Dense(1 * 4, activation='linear')(encoded_4)
+    encoded = Dense(4 * encoding_dim, activation='relu')(lstm)
+    encoded_1 = Dense(2 * encoding_dim, activation='relu')(encoded)
+    encoded_2 = Dense(encoding_dim, activation='relu')(encoded_1)
+    encoded_2_1 = Dense(2 * encoding_dim, activation='relu')(encoded_2)
+    encoded_2_2 = Dense(4 * encoding_dim, activation='relu')(encoded_2_1)
+    # encoded_3 = Dense(1024, activation='relu')(encoded_2_2)
+    encoded_4 = Dense(encoding_dim, activation='relu')(encoded_2_2)
+    decoded = Dense(timestep * 4, activation='linear')(encoded_4)
     # autoencoder = Model(input_layer, decoded)
-    reshaped_output = Reshape((1, 4))(decoded)  # Reshape to (None, 5, 4)
+    reshaped_output = Reshape((timestep, 4))(decoded)  # Reshape to (None, 5, 4)
     autoencoder = Model(input_layer, reshaped_output)
     
     autoencoder.compile(optimizer='adam', loss="mse")  # Use 'mse' for reconstruction loss
@@ -79,7 +83,7 @@ def create_autoencoder(input_size, timestep, encoding_dim):
 
 
 def model(data_df, timestep, input_size, encoding_dim):
-    X, y = Sequential_Input_LSTM(data_df, timestep, predict_next=True)
+    X, y = Sequential_Input_LSTM(data_df, timestep, predict_next=False)
     print(X.shape)
     X[np.isnan(X)] = 0
     y[np.isnan(y)] = 0
@@ -88,21 +92,21 @@ def model(data_df, timestep, input_size, encoding_dim):
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
     print(X_train.shape)
-    save_dataset(X_train, X_test, y_train, y_test, output_path, timestep)
+    save_dataset(X_train, X_test, y_train, y_test, dataset_path, timestep, encoding_dim)
     # Create and train the autoencoder
     autoencoder = create_autoencoder(input_size, timestep, encoding_dim)
     
     print(dir(autoencoder))
     
     print(autoencoder.summary())
-    training_history = autoencoder.fit(X, y, epochs=10, batch_size=64, verbose=2, validation_split=0.2)
+    training_history = autoencoder.fit(X_train, y_train, epochs=10, batch_size=64, verbose=2, validation_split=0.1)
     
-    save_model(autoencoder, output_path, timestep)
+    save_model(autoencoder, model_path, timestep)
     
     # training_history = model.fit(X, y, epochs=20, batch_size=64, verbose=2, validation_split=0.2)
     
     
-    with open(f"{output_path}/training_history_pickle_{input_size}.pkl", 'wb') as file:
+    with open(f"{model_path}/training_history_pickle_{timestep}_timestep_{encoding_dim}_dim.pkl", 'wb') as file:
         pickle.dump(training_history.history, file)
     
     loss = training_history.history['loss']
@@ -117,13 +121,13 @@ def model(data_df, timestep, input_size, encoding_dim):
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
     plt.legend()
-    plt.savefig(f"{output_path}/training_history_{input_size}.png")
+    plt.savefig(f"{output_path}/training_history_{timestep}_timestep_{encoding_dim}_dim.png")
     plt.clf()
 
     
-    model_name = f"model_time_step_{timestep}_nodes_{input_size}.h5"
+    model_name = f"model_time_step_{encoding_dim}_nodes_{input_size}.h5"
     print("saving model as ", model_name)
-    autoencoder.save(f'{output_path}/{model_name}')
+    autoencoder.save(f'{model_path}/{model_name}')
     
     print("training lstm done!!")
     y_pred = autoencoder.predict(X_test, verbose=2)
@@ -142,7 +146,7 @@ def model(data_df, timestep, input_size, encoding_dim):
     
     benign_mse = []
     malicious_mse = []
-    mal_X, mal_y = Sequential_Input_LSTM(malicious_df, timestep, predict_next=True)
+    mal_X, mal_y = Sequential_Input_LSTM(malicious_df, timestep, predict_next=False)
     start = 0 #random.randint(0, len(X_test))
     end = len(y_test) #int(0.1*len(mal_y)) + start
     y_pred_mal = autoencoder.predict(mal_X[start:end], verbose=2)
@@ -154,12 +158,12 @@ def model(data_df, timestep, input_size, encoding_dim):
     y_pred_benign = autoencoder.predict(X_test, verbose=2)
 
     for i in range(len(y_pred_benign)):
-        mse = np.mean(np.square(y_test[i] - y_pred_benign[i]))
+        mse = np.mean(np.square(y_test[i][0] - y_pred_benign[i][0]))
         benign_mse.append(mse)
     print("Mean Squared Error:", sorted(benign_mse)[:20])
 
     for i in range(len(y_pred_mal)):
-        mse = np.mean(np.square(mal_y[i] - y_pred_mal[i]))
+        mse = np.mean(np.square(mal_y[i][0] - y_pred_mal[i][0]))
         malicious_mse.append(mse)
             
     # Create labels for ROC curve
@@ -189,7 +193,7 @@ def model(data_df, timestep, input_size, encoding_dim):
     plt.ylabel('True Positive Rate')
     plt.title('ROC Curve')
     plt.legend(loc='lower right')
-    plt.savefig(f"{output_path}/roc_3_{input_size}_nodes_{timestep}_timestep.png")
+    plt.savefig(f"{output_path}/roc_3_{encoding_dim}_nodes_{timestep}_timestep.png")
     plt.clf()
     
     # Assuming you already have fpr, tpr, and thresholds from roc_curve
@@ -204,7 +208,7 @@ def model(data_df, timestep, input_size, encoding_dim):
     benign_anomalies = np.where(np.array(benign_mse) > threshold, 0, 1)
     accuracy = (np.sum(mal_anomalies) + np.sum(benign_anomalies)) / (len(mal_anomalies) + len(benign_anomalies))
     print("accuracy", accuracy)
-    return accuracy
+    return accuracy, roc_auc
 
     benign_mse = sorted(benign_mse)
     malicious_mse = sorted(malicious_mse)
@@ -335,28 +339,50 @@ def model(data_df, timestep, input_size, encoding_dim):
 
 # Anomaly detection for different encoding dimensions
 all_accuracies_anomaly = []
-for encoding_dim in [256, 512, 1024, 2048]:  # Adjust the encoding dimension as needed
+all_roc_auc_list = []
+encoding_dim_list =  [256, 512, 1024]
+for encoding_dim in encoding_dim_list:#[256, 512, 1024, 2048]:  # Adjust the encoding dimension as needed
     accuracies_anomaly = []
-    for timestep in range(1, 10):
-        accu = model(df, timestep, input_size=timestep, encoding_dim=encoding_dim)
+    roc_auc_list = []
+    for timestep in range(1, 11):
+        accu, roc_auc = model(df, timestep, input_size=timestep, encoding_dim=encoding_dim)
         accuracies_anomaly.append(accu)
+        roc_auc_list.append(roc_auc)
     all_accuracies_anomaly.append(accuracies_anomaly)
+    all_roc_auc_list.append(roc_auc_list)
     plt.plot(range(len(accuracies_anomaly)), accuracies_anomaly, marker='o')
     plt.xlabel('Time Step')
     plt.ylabel('Accuracy')
     plt.savefig(f"{output_path}/anomaly_accuracy_10_epoch_dim_{encoding_dim}.png")
     plt.clf()
     
+    plt.plot(range(len(roc_auc_list)), roc_auc_list, marker='o')
+    plt.xlabel('Time Step')
+    plt.ylabel('AUC')
+    plt.savefig(f"{output_path}/anomaly_roc_10_epoch_dim_{encoding_dim}.png")
+    plt.clf()
+    
 print("all_accuracies_anomaly", all_accuracies_anomaly)
 all_accuracies_anomaly_transposed = np.array(all_accuracies_anomaly).T
+all_roc_auc_list = np.array(all_roc_auc_list).T
 
 ij = 0
 # Plot each line separately
 for i in range(len(all_accuracies_anomaly_transposed)):
-    plt.plot(range(1, 1+len(all_accuracies_anomaly_transposed[i])), all_accuracies_anomaly_transposed[i], marker='o', label=f'Dim {encoding_dim}')
+    plt.plot(encoding_dim_list, all_accuracies_anomaly_transposed[i], marker='o', label=f'Dim {encoding_dim}')
     ij += 1
-    plt.xlabel('Time Step')
+    plt.xlabel('encoding dim')
     plt.ylabel('Accuracy')
+    plt.legend()
+    plt.savefig(f"{output_path}/anomaly_accuracy_plot_transposed_{ij}.png")
+    plt.clf()
+    
+# Plot each line separately
+for i in range(len(all_roc_auc_list)):
+    plt.plot(encoding_dim_list, all_roc_auc_list[i], marker='o', label=f'Dim {encoding_dim}')
+    ij += 1
+    plt.xlabel('encoding dim')
+    plt.ylabel('auc')
     plt.legend()
     plt.savefig(f"{output_path}/anomaly_accuracy_plot_transposed_{ij}.png")
     plt.clf()

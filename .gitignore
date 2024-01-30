@@ -4,3 +4,4 @@ venv/
 pcap_split/
 slurm*
 __pycache__
+.vscode/

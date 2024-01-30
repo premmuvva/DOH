@@ -55,7 +55,7 @@ def custom_mse(y_true, y_pred):
     return K.mean(K.square(y_pred - y_true[0]), axis=-1)
 
 def model(data_df, timestep, number_of_lstm_nodes):
-    X, y = Sequential_Input_LSTM(data_df, timestep, predict_next=True)
+    X, y = Sequential_Input_LSTM(data_df, timestep, predict_next=False)
     # X[np.isnan(X)] = 0
     # y[np.isnan(y)] = 0
     
@@ -81,7 +81,7 @@ def model(data_df, timestep, number_of_lstm_nodes):
 
     model = Sequential()
     model.add(LSTM(units=lstm_nodes, return_sequences=True, input_shape=(timestep, 4)))
-    model.add(LSTM(units=lstm_nodes, return_sequences=False))
+    # model.add(LSTM(units=lstm_nodes, return_sequences=False))
     model.add(Dense(units=16, activation='linear'))
     # model.add(Reshape((timestep, 4)))
     
@@ -108,7 +108,7 @@ def model(data_df, timestep, number_of_lstm_nodes):
     print(model.summary())
     
     print("training lstm")
-    training_history = model.fit(X, y, epochs=10, batch_size=64, verbose=2, validation_split=0.2)
+    training_history = model.fit(X, y, epochs=5, batch_size=64, verbose=2, validation_split=0.2)
     
     
     with open(f"{output_path}/training_history_pickle_{lstm_nodes}.pkl", 'wb') as file:
@@ -151,7 +151,7 @@ def model(data_df, timestep, number_of_lstm_nodes):
     
     benign_mse = []
     malicious_mse = []
-    mal_X, mal_y = Sequential_Input_LSTM(malicious_df, timestep, predict_next=True)
+    mal_X, mal_y = Sequential_Input_LSTM(malicious_df, timestep, predict_next=False)
     start = 0 #random.randint(0, len(X_test))
     end = len(y_test) #int(0.1*len(mal_y)) + start
     y_pred_mal = model.predict(mal_X[start:end], verbose=2)
@@ -163,12 +163,12 @@ def model(data_df, timestep, number_of_lstm_nodes):
     y_pred_benign = model.predict(X_test, verbose=2)
 
     for i in range(len(y_pred_benign)):
-        mse = np.mean(np.square(y_test[i] - y_pred_benign[i]))
+        mse = np.mean(np.square(y_test[i][0] - y_pred_benign[i][0]))
         benign_mse.append(mse)
     print("Mean Squared Error:", sorted(benign_mse)[:20])
 
     for i in range(len(y_pred_mal)):
-        mse = np.mean(np.square(mal_y[i] - y_pred_mal[i]))
+        mse = np.mean(np.square(mal_y[i][0] - y_pred_mal[i][0]))
         malicious_mse.append(mse)
             
     # Create labels for ROC curve
@@ -271,9 +271,9 @@ def model(data_df, timestep, number_of_lstm_nodes):
 
 # Anomaly detection for different LSTM nodes
 all_accuracies_anomaly = []
-for lstm_nodes in [256, 512, 1024, 2048]:
+for lstm_nodes in [1024]:
     accuracies_anomaly = []
-    for timestep in range(1, 11):
+    for timestep in range(5, 6):
         accu = model(df, timestep=timestep, number_of_lstm_nodes=lstm_nodes)
         accuracies_anomaly.append(accu)
     all_accuracies_anomaly.append(accuracies_anomaly)
