@@ -12,9 +12,9 @@ def custom_mse(y_true, y_pred):
     return K.mean(K.square(y_pred[:4] - y_true[:4]), axis=-1)
 
 # output_path = "output/anomaly_lstm_2024-01-25_02:47:38.635190"
-output_path = "output/lstm_anomaly_2024-01-26_23:52:38.664442"
-number_of_lstm_nodes = 4096
-timestep = 8
+output_path = "output/lstm_anomaly_2024-01-28_19:03:09.237239"
+number_of_lstm_nodes = 256
+timestep = 10
 random_string = ""
 
 print(f"wokrin with {output_path}, {number_of_lstm_nodes}, {timestep}, {random_string}")
@@ -33,30 +33,30 @@ benign_mse = []
 malicious_mse = []
 mal_X, mal_y = Sequential_Input_LSTM(malicious_df, timestep, predict_next=True)
 start = 0 #random.randint(0, len(X_test))
-end = int(len(mal_y)) + start
+end = len(y_test) #int(0.1*len(mal_y)) + start
 y_pred_mal = model.predict(mal_X[start:end], verbose=2)
+
+print("len y test", len(y_test))
+print("len mal y test", len(mal_y))
+
 
 y_pred_benign = model.predict(X_test, verbose=2)
 
 for i in range(len(y_pred_benign)):
-    mse = np.mean(np.square(y_test[i] - y_pred_benign[i][0]))
+    mse = np.mean(np.square(y_test[i][0] - y_pred_benign[i][0]))
     benign_mse.append(mse)
 print("Mean Squared Error:", sorted(benign_mse)[:20])
 
 for i in range(len(y_pred_mal)):
-    mse = np.mean(np.square(mal_y[i][:4] - y_pred_mal[i][:4]))
+    mse = np.mean(np.square(mal_y[i][0] - y_pred_mal[i][0]))
     malicious_mse.append(mse)
         
 # Create labels for ROC curve
-y_true = np.concatenate([np.zeros(len(benign_mse)), np.ones(len(malicious_mse))])
+y_true = np.concatenate([np.ones(len(benign_mse)), np.zeros(len(malicious_mse))])
 y_scores = np.concatenate([benign_mse, malicious_mse])
 
 print("y_true", y_true)
 print("y_scores", y_scores)
-
-# Check for NaN or infinite values in inputs
-print("NaN in y_true:", np.isnan(y_true).any())
-print("NaN in y_scores:", np.isnan(y_scores).any())
 
 # Calculate ROC curve
 fpr, tpr, thresholds = roc_curve(y_true, y_scores)
@@ -81,10 +81,16 @@ plt.title('ROC Curve')
 plt.legend(loc='lower right')
 plt.savefig(f"{output_path}/roc_3_{number_of_lstm_nodes}_nodes_{timestep}_timestep.png")
 
+# Assuming you already have fpr, tpr, and thresholds from roc_curve
+J_values = tpr - fpr
+optimal_threshold_index = np.argmax(J_values)
+optimal_threshold = thresholds[optimal_threshold_index]
 
-threshold = 0.57  # Adjust as needed
-mal_anomalies = np.where(np.array(malicious_mse) > threshold, 1, 0)
-benign_anomalies = np.where(np.array(benign_mse) > threshold, 0, 1)
+print("Optimal Threshold:", optimal_threshold)
+
+threshold = optimal_threshold
+mal_anomalies = np.where(np.array(malicious_mse) > threshold, 0, 1)
+benign_anomalies = np.where(np.array(benign_mse) > threshold, 1, 0)
 accuracy = (np.sum(mal_anomalies) + np.sum(benign_anomalies)) / (len(mal_anomalies) + len(benign_anomalies))
 
 print("mal_anomalies", mal_anomalies)

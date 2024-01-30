@@ -2,7 +2,15 @@ import numpy as np
 import random
 import pandas as pd
 
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+
+
 def Sequential_Input_LSTM_transpose(total_data_df, time_step_size, predict_next=False):
+    min_max_scaler = MinMaxScaler()
+    columns_to_normalize = ['Number of Packets', 'Direction', 'Size', 'Duration']
+
+    total_data_df[columns_to_normalize] = min_max_scaler.fit_transform(total_data_df[columns_to_normalize])
+
     yy = total_data_df['Label'].replace(to_replace="Benign", value="0").replace(to_replace="Malicious", value="1").astype('int64')
     XX = total_data_df.drop(['Label'], axis=1)
 
@@ -15,13 +23,14 @@ def Sequential_Input_LSTM_transpose(total_data_df, time_step_size, predict_next=
     for i in range(0, len(df_x_np) - time_step_size):
         if predict_next:
             row = [a for a in df_x_np[i:i + time_step_size]]
-            next_row = [a for a in df_x_np[i + time_step_size: i + 2 * time_step_size]]
+            # next_row = [a for a in df_x_np[i + time_step_size: i + 2 * time_step_size]]
+            next_row = [a for a in df_x_np[i + time_step_size]]
 
-            if (np.isnan(row).any()) or (np.isnan(next_row).any()):
+            if (np.isnan(row).any()) or (np.isnan(next_row).any()) :#or len(next_row) != time_step_size:
                 continue
 
-            X.append(np.array(row).T)
-            y.append(np.array(next_row).T)
+            X.append(np.array(row))
+            y.append(np.array(next_row))
         else:
             row = [a for a in df_x_np[i:i + time_step_size]]
             if (np.isnan(row).all()):
@@ -138,8 +147,9 @@ def save_dataset(X_train, X_test, y_train, y_test, output_path, timestep):
     
 def fetch_dataset():
     # global df, malicious_df
-    # benign_df = pd.read_csv("output/merge_npy/benignV2_final_without_multi_index.csv", header=[0], low_memory=False)
-    benign_df = pd.read_csv("output/merge_npy/benignV2_cloudflare.csv", header=[0], low_memory=False)
+    print("benign dataset: output/merge_npy/benignV2_merge_withoutmultiindex_final.csv")
+    benign_df = pd.read_csv("output/merge_npy/benignV2_merge_withoutmultiindex_final.csv", header=[0], low_memory=False)
+    # benign_df = pd.read_csv("output/merge_npy/benignV2_cloudflare.csv", header=[0], low_memory=False)
     benign_df['Label'] = 0
     benign_df = benign_df.drop(['RawTimestamp', 'src', 'dst'], axis=1)
     # benign_df.to_csv("output/final_benign_dataset.csv", index=False)

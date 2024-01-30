@@ -3,9 +3,10 @@
 import copy
 import os
 from keras.models import Sequential
-from keras.layers import LSTM, Dense, Lambda, Flatten
+from keras.layers import LSTM, Dense, Lambda, Flatten, Reshape
 from keras.layers import Dropout, RepeatVector, TimeDistributed, Dense
 import pandas as pd
+from sklearn.metrics import roc_curve, auc
 import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
@@ -20,6 +21,7 @@ import seaborn as sns
 from common_utils import Sequential_Input_LSTM_transpose as Sequential_Input_LSTM
 from common_utils import fetch_dataset
 from keras import backend as K
+import pickle
 
 np.set_printoptions(threshold=30)
 print("test run count")
@@ -60,6 +62,9 @@ def model(data_df, timestep, number_of_lstm_nodes):
     X = np.asarray(X).astype('float32')
     y = np.asarray(y).astype('float32')
     
+    print("X 0", X[0])
+    print("y 0", y[0])
+    
     size_limit = int(0.1 * len(X))
     X_train, X_test, y_train, y_test = train_test_split(X[:size_limit], y[:size_limit], test_size=0.20, random_state=42)
     
@@ -74,30 +79,56 @@ def model(data_df, timestep, number_of_lstm_nodes):
 
     print(len(X_train))
 
-    
     model = Sequential()
-    model.add(Dense(units=number_of_lstm_nodes, activation='relu', input_shape=(4, timestep))) 
-    model.add(LSTM(units=number_of_lstm_nodes, return_sequences=True))
+    model.add(LSTM(units=lstm_nodes, return_sequences=True, input_shape=(timestep, 4)))
+    model.add(LSTM(units=lstm_nodes, return_sequences=False))
+    model.add(Dense(units=16, activation='linear'))
+    # model.add(Reshape((timestep, 4)))
+    
+    # model = Sequential()
+    # model.add(Dense(units=number_of_lstm_nodes, activation='relu', input_shape=(4, timestep))) 
+    # model.add(LSTM(units=lstm_nodes, return_sequences=False))
     model.add(Dropout(rate=0.2))
-    model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
-    model.add(Dropout(rate=0.2))
-    model.add(LSTM(units=number_of_lstm_nodes, return_sequences=True))
+    model.add(Dense(units=4, activation='relu'))
     # model.add(Dropout(rate=0.2))
-    # model.add(LSTM(units=number_of_lstm_nodes, return_sequences=True, activation='relu'))
-    model.add(Dropout(rate=0.2))
-    model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
-    model.add(Dropout(rate=0.2))
-    model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
-    model.add(Dense(units=timestep, activation='linear'))
+    # model.add(LSTM(units=number_of_lstm_nodes, return_sequences=True))
+    # # model.add(Dropout(rate=0.2))
+    # # model.add(LSTM(units=number_of_lstm_nodes, return_sequences=True, activation='relu'))
+    # model.add(Dropout(rate=0.2))
+    # model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
+    # model.add(Dropout(rate=0.2))
+    # model.add(Dense(units=number_of_lstm_nodes, activation='relu'))
+    # model.add(Dense(units=timestep, activation='linear'))
     
     # print(model.summary())
     
     model.compile(optimizer='adam', loss='mse')
+    model.build(input_shape=(32, timestep, 4))
     
     print(model.summary())
     
     print("training lstm")
-    model.fit(X_train, y_train, epochs=3, batch_size=64, verbose=2)
+    training_history = model.fit(X, y, epochs=10, batch_size=64, verbose=2, validation_split=0.2)
+    
+    
+    with open(f"{output_path}/training_history_pickle_{lstm_nodes}.pkl", 'wb') as file:
+        pickle.dump(training_history.history, file)
+    
+    loss = training_history.history['loss']
+    val_loss = training_history.history['val_loss']
+
+    epochs = range(1, len(loss) + 1)
+
+    # Plotting training and validation loss
+    plt.plot(epochs, loss, 'bo', label='Training loss')
+    plt.plot(epochs, val_loss, 'b', label='Validation loss')
+    plt.title('Training and Validation Loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.savefig(f"{output_path}/training_history_{lstm_nodes}.png")
+    plt.clf()
+
     
     model_name = f"model_time_step_{timestep}_nodes_{number_of_lstm_nodes}.h5"
     print("saving model as ", model_name)
@@ -121,18 +152,75 @@ def model(data_df, timestep, number_of_lstm_nodes):
     benign_mse = []
     malicious_mse = []
     mal_X, mal_y = Sequential_Input_LSTM(malicious_df, timestep, predict_next=True)
-    y_pred_mal = model.predict(mal_X, verbose=2)
-    
-    for i in range(len(y_pred)):
-        mse = np.mean(np.square(y_test[i][0] - y_pred[i][0]))
+    start = 0 #random.randint(0, len(X_test))
+    end = len(y_test) #int(0.1*len(mal_y)) + start
+    y_pred_mal = model.predict(mal_X[start:end], verbose=2)
+
+    print("len y test", len(y_test))
+    print("len mal y test", len(mal_y))
+
+
+    y_pred_benign = model.predict(X_test, verbose=2)
+
+    for i in range(len(y_pred_benign)):
+        mse = np.mean(np.square(y_test[i] - y_pred_benign[i]))
         benign_mse.append(mse)
-    # print("Mean Squared Error:", sorted(benign_mse)[0:20])
+    print("Mean Squared Error:", sorted(benign_mse)[:20])
+
+    for i in range(len(y_pred_mal)):
+        mse = np.mean(np.square(mal_y[i] - y_pred_mal[i]))
+        malicious_mse.append(mse)
+            
+    # Create labels for ROC curve
+    y_true = np.concatenate([np.zeros(len(benign_mse)), np.ones(len(malicious_mse))])
+    y_scores = np.concatenate([benign_mse, malicious_mse])
+
+    print("y_true", y_true)
+    print("y_scores", y_scores)
+
+    # Calculate ROC curve
+    fpr, tpr, thresholds = roc_curve(y_true, y_scores)
+
+    print("thresholds", thresholds)
+    print("fpr", fpr)
+    print("tpr", tpr)
+    # Check for NaN or infinite values in outputs
+    print("NaN in fpr:", np.isnan(fpr).any())
+    print("NaN in tpr:", np.isnan(tpr).any())
+
+    roc_auc = auc(fpr, tpr)
+
+    # Plot ROC curve
+    plt.figure()
+    plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'AUC = {roc_auc:.2f}')
+    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('ROC Curve')
+    plt.legend(loc='lower right')
+    plt.savefig(f"{output_path}/roc_3_{number_of_lstm_nodes}_nodes_{timestep}_timestep.png")
+    plt.clf()
+
+    # Assuming you already have fpr, tpr, and thresholds from roc_curve
+    J_values = tpr - fpr
+    optimal_threshold_index = np.argmax(J_values)
+    optimal_threshold = thresholds[optimal_threshold_index]
+
+    print("Optimal Threshold:", optimal_threshold)
+
+    threshold = optimal_threshold
+    mal_anomalies = np.where(np.array(malicious_mse) > threshold, 1, 0)
+    benign_anomalies = np.where(np.array(benign_mse) > threshold, 0, 1)
+    accuracy = (np.sum(mal_anomalies) + np.sum(benign_anomalies)) / (len(mal_anomalies) + len(benign_anomalies))
+    print("numerator", (np.sum(mal_anomalies) + np.sum(benign_anomalies)))
+    print("denominator", (len(mal_anomalies) + len(benign_anomalies)))
+    print("accuracy", accuracy)
+    # benign_mse = sorted(benign_mse)
+    # percentage = 90
+    # index_cutoff = int(len(benign_mse) * (percentage / 100))
+    # benign_mse = benign_mse[:index_cutoff]
     
-    benign_mse = sorted(benign_mse)
-    percentage = 90
-    index_cutoff = int(len(benign_mse) * (percentage / 100))
-    benign_mse = benign_mse[:index_cutoff]
-    
+    return accuracy
     
     xs, ys = zip(*sorted(zip(range(len(benign_mse)), benign_mse)))
     plt.plot(xs, ys)
@@ -140,25 +228,6 @@ def model(data_df, timestep, number_of_lstm_nodes):
     plt.ylabel('mse')
     plt.savefig(f"{output_path}/mse_benign_label_sorted_{lstm_nodes}.png")
     plt.clf()
-    
-    for i in range(len(y_pred_mal)):
-        mse = np.mean(np.square(mal_y[i][:4] - y_pred_mal[i][:4]))
-        malicious_mse.append(mse)
-    # print("Mean Squared Error:", malicious_mse)
-    malicious_mse = sorted(malicious_mse)
-    percentage = 90
-    index_cutoff = int(len(malicious_mse) * (percentage / 100))
-    malicious_mse = malicious_mse[:index_cutoff]
-    
-    # xs, ys = zip(*sorted(zip(range(len(malicious_mse)), malicious_mse)))
-    # plt.plot(xs, ys)
-    # # plt.plot(range(len(y_pred)), sorted(benign_mse), color="blue")
-    # # malicious_mse_90 = sorted(malicious_mse)[:int(0.5 * len(malicious_mse))]
-    # # plt.plot(range(len(malicious_mse)), malicious_mse, marker='o', color="red")
-    # plt.xlabel('count')
-    # plt.ylabel('mse')
-    # plt.savefig(f"{output_path}/mse_label_{lstm_nodes}.png")
-    # plt.clf()
     
     xs, ys = zip(*sorted(zip(range(len(malicious_mse)), malicious_mse)))
     plt.plot(xs, ys)
@@ -187,29 +256,29 @@ def model(data_df, timestep, number_of_lstm_nodes):
     sns_plot.savefig(f"{output_path}/sns_malicious_plot_{lstm_nodes}_nodes_{timestep}.png")
     
     # For anomaly detection, you can set a threshold for classifying high MSE as anomalies.
-    threshold = 0.1  # Adjust as needed
-    anomalies = np.where(np.array(malicious_mse) > threshold, 1, 0)
+    # threshold = 0.1  # Adjust as needed
+    # anomalies = np.where(np.array(malicious_mse) > threshold, 1, 0)
     
-    print("y_pred_bool", anomalies)
-    print(np.unique(anomalies, return_counts=True))
+    # print("y_pred_bool", anomalies)
+    # print(np.unique(anomalies, return_counts=True))
     # print(np.unique(y, return_counts=True))
 
     # print(classification_report(y_test, anomalies))
     # print(confusion_matrix(y_test, anomalies))
-    accuracy = np.sum(y_test == anomalies) / len(y_test)
-    print(accuracy, y_test)
+    # accuracy = np.sum(y_test == anomalies) / len(y_test)
+    # print(accuracy, y_test)
     return accuracy
 
 # Anomaly detection for different LSTM nodes
 all_accuracies_anomaly = []
-for lstm_nodes in [4096]: #[1024, 2048, 4096, 8192]:
+for lstm_nodes in [256, 512, 1024, 2048]:
     accuracies_anomaly = []
-    for timestep in range(5, 6):
+    for timestep in range(1, 11):
         accu = model(df, timestep=timestep, number_of_lstm_nodes=lstm_nodes)
         accuracies_anomaly.append(accu)
     all_accuracies_anomaly.append(accuracies_anomaly)
-    # plt.plot(range(1, 11), accuracies_anomaly, marker='o')
-    # plt.xlabel('Time Step')
-    # plt.ylabel('Accuracy')
-    # plt.savefig(f"{output_path}/anomaly_accuracy_10_epoch_nodes_{lstm_nodes}.png")
-    # plt.clf()
+    plt.plot(range(1, 1+len(accuracies_anomaly)), accuracies_anomaly, marker='o')
+    plt.xlabel('Time Step')
+    plt.ylabel('Accuracy')
+    plt.savefig(f"{output_path}/anomaly_accuracy_10_epoch_nodes_{lstm_nodes}.png")
+    plt.clf()

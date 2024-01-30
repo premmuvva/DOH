@@ -73,7 +73,7 @@ def merge_npy_files_in_directory(directory_path, output_path, progress_file):
     print(f"Merged data saved to {output_path}.")
 
 
-merge_npy_files_in_directory('output/npy/benignV2/cloudflare', 'output/merge_npy/benignV2_cloudflare.csv', 'output/merge_npy/benignV2_cloudflare.log')
+merge_npy_files_in_directory('output/npy/benignV2/', 'output/merge_npy/benignV2_merge_withoutmultiindex_final.csv', 'output/merge_npy/benignV2_merge_withoutmultiindex_final.log')
 # merge_npy_files_in_directory('output/npy/maliciousv2/', 'output/temp/maliciousv2_final_without_multi_index.csv', 'output/temp/maliciousv2_final_without_multi_index_progress.log')
 
 
